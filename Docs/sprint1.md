@@ -8,12 +8,10 @@ No backend, database, or business logic this sprint. The data is hardcoded sampl
 
 ## Tasks
 
-Scope: S = Small (≈0.5–1 day) · M = Medium (1–2 days)
-Done legend: Done = completed and merged · In Progress = being worked on · – = not started
 
 | ID | Task | Scope | Deps | Assignee | Done |
 |---|---|---|---|---|---|
-| Task 1 | **Project setup & integration:** Set up the React project (Vite + React Router), the main layout, and the routes. Merge everyone's code and test the full flow against the storyboard. | M | — | Quan | In Progress |
+| Task 1 | **Project setup & integration:** Set up the React project (Vite + React Router), the main layout, and the routes. Merge everyone's code and test the full flow against the storyboard. | M | — | Quan | Done |
 | Task 2 | **Applications List page:** Create the sample data file (4–6 applications) and the list page showing Company, Position, and Status, laid out like the storyboard. | M | Task 1 | Member 2 | – |
 | Task 3 | **Application Details page:** Show the selected application's company, position, status, deadline, and notes, with a "Back to Applications" button, laid out like the storyboard. | M | Task 1 | Member 3 | – |
 | Task 4 | **Page interactions:** Clicking an application opens its details page, Back returns to the list, and an invalid id shows "Application not found". | S | Task 2, 3 | Member 4 | – |
@@ -35,15 +33,6 @@ Also:
 - Every GitHub issue's status matches real progress.
 - The Wiki has the Challenges, Implementation Summary, and Revised Use Case Diagram sections, all matching the MVP.
 
-## Timeline
-
-| Date | Milestone |
-|---|---|
-| Oct 29 | Issues created (Task 5), project setup pushed (Task 1) |
-| Oct 30 | Mid-sprint GTA meeting, sample data pushed |
-| Next 2–3 days | Tasks 2–4 built in parallel |
-| ~2 days before due | Integration and testing, Wiki finished |
-| Before demo | Final issue check, Gradescope submission, rehearse |
 
 ## Git Workflow
 
@@ -163,10 +152,3 @@ frontend/
 }
 ```
 
-### Next Sprint
-
-- **Backend:** add Spring Boot endpoints, for example:
-  - `GET /api/applications` returns the list
-  - `GET /api/applications/{id}` returns one application
-- **Database:** store applications in a Supabase PostgreSQL table with the same fields as the sample data.
-- **Frontend:** replace the `applications.js` import in the route components with API calls. The page components don't change, because they only receive props.
