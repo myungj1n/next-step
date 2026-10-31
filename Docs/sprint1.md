@@ -17,7 +17,7 @@ No backend, database, or business logic this sprint. The data is hardcoded sampl
 | Task 4 | **Page interactions:** Clicking an application opens its details page, Back returns to the list, and an invalid id shows "Application not found". | S | Task 2, 3 | Member 3 | – |
 | Task 5 | **GitHub & planning:** Create the issues and sub-issues, keep the project timeline and issue states accurate, and write the next-sprint plan. | S | — | Member 3 | – |
 | Task 6 | **Use Case Diagram & Implementation Summary:** Revise the Sprint 1 use case diagram to highlight View Applications and add it to the Wiki with an explanation and issue links. Write the Wiki Implementation Summary. | M | Task 4 | Member 4 | – |
-| Task 7 | **Wiki: Challenges:** Describe this sprint's challenges and how the team handled them. | S | Task 1 | Quan | – |
+| Task 7 | **Wiki: Challenges:** Describe this sprint's challenges and how the team handled them. | S | Task 1 | Quan | Done |
 
 Also:
 - Each member submits an individual contribution statement on Gradescope.
