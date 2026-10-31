@@ -12,9 +12,9 @@ No backend, database, or business logic this sprint. The data is hardcoded sampl
 | ID | Task | Scope | Deps | Assignee | Done |
 |---|---|---|---|---|---|
 | Task 1 | **Project setup & integration:** Set up the React project (Vite + React Router), the main layout, and the routes. Merge everyone's code and test the full flow against the storyboard. | M | — | Quan | Done |
-| Task 2 | **Applications List page:** Create the sample data file (4–6 applications) and the list page showing Company, Position, and Status, laid out like the storyboard. | M | Task 1 | Member 2 | – |
-| Task 3 | **Application Details page:** Show the selected application's company, position, status, deadline, and notes, with a "Back to Applications" button, laid out like the storyboard. | M | Task 1 | Member 3 | – |
-| Task 4 | **Page interactions:** Clicking an application opens its details page, Back returns to the list, and an invalid id shows "Application not found". | S | Task 2, 3 | Member 4 | – |
+| Task 2 | **Applications List page:** Create the sample data file (4–6 applications) and the list page showing Company, Position, and Status, laid out like the storyboard. | M | Task 1 | Quan | Done |
+| Task 3 | **Application Details page:** Show the selected application's company, position, status, deadline, and notes, with a "Back to Applications" button, laid out like the storyboard. | M | Task 1 | Member 2 | – |
+| Task 4 | **Page interactions:** Clicking an application opens its details page, Back returns to the list, and an invalid id shows "Application not found". | S | Task 2, 3 | Member 3 | – |
 | Task 5 | **GitHub & planning:** Create the issues and sub-issues, keep the project timeline and issue states accurate, and write the next-sprint plan. | S | — | Member 3 | – |
 | Task 6 | **Use Case Diagram & Implementation Summary:** Revise the Sprint 1 use case diagram to highlight View Applications and add it to the Wiki with an explanation and issue links. Write the Wiki Implementation Summary. | M | Task 4 | Member 4 | – |
 | Task 7 | **Wiki: Challenges:** Describe this sprint's challenges and how the team handled them. | S | Task 1 | Quan | – |
