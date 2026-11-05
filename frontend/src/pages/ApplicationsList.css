@@ -1,0 +1,82 @@
+.list-title {
+  margin: 0 0 4px;
+  font-size: 1.75rem;
+}
+
+.list-subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+}
+
+.list-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.list-table th,
+.list-table td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.list-table th {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.list-row {
+  cursor: pointer;
+}
+
+.list-row + .list-row td {
+  border-top: 1px solid var(--border);
+}
+
+.list-row:hover,
+.list-row:focus-visible {
+  background: #f0f3ff;
+  outline: none;
+}
+
+.list-company {
+  font-weight: 600;
+}
+
+.status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-applied {
+  background: #e7edff;
+  color: #2f4ac0;
+}
+
+.status-interviewing {
+  background: #fff4e0;
+  color: #9a5b00;
+}
+
+.status-offer {
+  background: #e3f7e9;
+  color: #1d7a3d;
+}
+
+.status-rejected {
+  background: #fde8e8;
+  color: #b42318;
+}
