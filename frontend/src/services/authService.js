@@ -17,3 +17,14 @@ export function signOut() {
 export function getCurrentUser() {
   return supabase.auth.getUser()
 }
+
+// The saved login session (null when logged out). Read locally, so it's fast enough to check on every page load.
+export function getSession() {
+  return supabase.auth.getSession()
+}
+
+// Calls callback(session) whenever the user logs in or out. Returns a function that stops listening.
+export function onAuthChange(callback) {
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => callback(session))
+  return () => data.subscription.unsubscribe()
+}

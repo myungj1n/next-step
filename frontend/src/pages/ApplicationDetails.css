@@ -68,6 +68,15 @@
   margin: 0;
 }
 
+.details-link {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.details-link a {
+  color: var(--accent);
+}
+
 .details-notes {
   white-space: pre-wrap;
 }

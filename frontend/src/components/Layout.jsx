@@ -1,4 +1,5 @@
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, Outlet, useLocation, useOutletContext } from 'react-router-dom'
+import { signOut } from '../services/authService.js'
 
 // Sidebar items. Only Applications is built this sprint; the rest are mock
 // placeholders for upcoming features (set `to` once their route exists).
@@ -27,8 +28,10 @@ function NavIcon({ name }) {
 }
 
 // Shared sidebar navigation and page container for every screen.
+// Logging out needs no redirect here: RequireAuth sees the session end and sends the user to /login.
 function Layout() {
   const { pathname } = useLocation()
+  const { user } = useOutletContext()
 
   const isActive = (item) =>
     item.matches.some((path) => (path === '/' ? pathname === '/' : pathname.startsWith(path)))
@@ -63,6 +66,14 @@ function Layout() {
             ))}
           </ul>
         </nav>
+        <div className="sidebar-footer">
+          <p className="sidebar-user" title={user.email}>
+            {user.email}
+          </p>
+          <button type="button" className="sidebar-logout" onClick={signOut}>
+            Log out
+          </button>
+        </div>
       </aside>
       <main className="page">
         <Outlet />

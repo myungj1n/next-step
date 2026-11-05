@@ -15,6 +15,22 @@
   overflow-x: auto;
 }
 
+.list-empty {
+  margin-top: 24px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.list-empty-title {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.list-empty-text {
+  margin: 0;
+  color: var(--muted);
+}
+
 .list-table {
   width: 100%;
   border-collapse: collapse;
