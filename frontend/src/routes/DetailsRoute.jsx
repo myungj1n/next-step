@@ -13,7 +13,7 @@ function DetailsRoute() {
   const navigate = useNavigate()
   // The result remembers its id, so a result for a previous id counts as still loading.
   const [result, setResult] = useState(null)
-  const goBack = () => navigate('/')
+  const goBack = () => navigate('/applications')
 
   useEffect(() => {
     let ignore = false

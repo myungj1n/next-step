@@ -4,7 +4,7 @@ import { signOut } from '../services/authService.js'
 // Sidebar items. Only Applications is built this sprint; the rest are mock
 // placeholders for upcoming features (set `to` once their route exists).
 const navItems = [
-  { label: 'Applications', to: '/', matches: ['/', '/applications'], icon: 'list' },
+  { label: 'Applications', to: '/applications', icon: 'list' },
   { label: 'Add Application', icon: 'plus' },
   { label: 'Progress Summary', icon: 'chart' },
   { label: 'Reminders', icon: 'bell' },
@@ -33,8 +33,8 @@ function Layout() {
   const { pathname } = useLocation()
   const { user } = useOutletContext()
 
-  const isActive = (item) =>
-    item.matches.some((path) => (path === '/' ? pathname === '/' : pathname.startsWith(path)))
+  // Active on the list and on any details page under it.
+  const isActive = (item) => pathname.startsWith(item.to)
 
   return (
     <div className="layout">

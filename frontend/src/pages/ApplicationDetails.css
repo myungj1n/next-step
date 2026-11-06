@@ -15,7 +15,7 @@
 }
 
 .details-back:hover {
-  background: #f0f3ff;
+  background: var(--accent-soft);
 }
 
 .details-back:focus-visible {
