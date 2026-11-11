@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ApplicationsList from '../pages/ApplicationsList.jsx'
-import { getMyApplications } from '../services/applicationService.js'
+import { applicationService } from '../services/index.js'
 
 // Loads the logged-in student's applications and handles list → details navigation.
 function ListRoute() {
@@ -11,11 +11,14 @@ function ListRoute() {
 
   useEffect(() => {
     let ignore = false
-    getMyApplications().then(({ data, error }) => {
-      if (ignore) return
-      if (error) setError(error)
-      else setApplications(data)
-    })
+    applicationService
+      .getMyApplications()
+      .then((data) => {
+        if (!ignore) setApplications(data)
+      })
+      .catch((err) => {
+        if (!ignore) setError(err)
+      })
     return () => {
       ignore = true
     }

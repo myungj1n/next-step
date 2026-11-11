@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import ApplicationDetails from '../pages/ApplicationDetails.jsx'
-import { getApplicationById } from '../services/applicationService.js'
+import { applicationService } from '../services/index.js'
+import { DetailsOutcome } from '../services/applicationService.js'
 
-// Postgres error for a malformed uuid, e.g. /applications/abc. Treated as "not found".
-const INVALID_UUID = '22P02'
-
-// Loads one application and handles details → back navigation.
-// RLS returns nothing for another student's application, so it shows as not found.
+// UI layer: asks ApplicationService for one application, picks the screen for the
+// outcome, and handles details → back navigation. No business or database logic here.
 function DetailsRoute() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -17,10 +15,8 @@ function DetailsRoute() {
 
   useEffect(() => {
     let ignore = false
-    getApplicationById(id).then(({ data, error }) => {
-      if (ignore) return
-      if (error?.code === INVALID_UUID) setResult({ id, application: null })
-      else setResult({ id, application: data, error })
+    applicationService.getApplicationDetails(id).then((details) => {
+      if (!ignore) setResult({ id, ...details })
     })
     return () => {
       ignore = true
@@ -37,18 +33,18 @@ function DetailsRoute() {
     return <p className="page-state">Loading application…</p>
   }
 
-  if (result.error) {
+  if (result.outcome === DetailsOutcome.ERROR) {
     return (
       <section>
         {backButton}
         <p className="page-state page-state-error" role="alert">
-          Couldn't load this application. {result.error.message}
+          Couldn't load this application. {result.message}
         </p>
       </section>
     )
   }
 
-  if (!result.application) {
+  if (result.outcome === DetailsOutcome.NOT_FOUND) {
     return (
       <section>
         {backButton}

@@ -1,22 +1,39 @@
-import { supabase } from '../lib/supabaseClient.js'
+// Application layer: business logic for viewing applications.
+// Depends only on the ApplicationRepository abstraction, passed in by services/index.js.
 
-// ApplicationService from the class diagram. Each method returns Supabase's { data, error }.
-// No user_id filter is needed: Row Level Security only returns the logged-in student's rows.
+export const DetailsOutcome = Object.freeze({
+  FOUND: 'FOUND',
+  NOT_FOUND: 'NOT_FOUND',
+  ERROR: 'ERROR',
+})
 
-const APPLICATION_COLUMNS = 'id, company, position, status, deadline, notes, job_link, resume_version'
+export class ApplicationService {
+  #repository
 
-export function getMyApplications() {
-  return supabase
-    .from('applications')
-    .select(APPLICATION_COLUMNS)
-    .order('created_at', { ascending: false })
-}
+  constructor(repository) {
+    this.#repository = repository
+  }
 
-// data is null when the id doesn't exist or belongs to another student.
-export function getApplicationById(id) {
-  return supabase
-    .from('applications')
-    .select(APPLICATION_COLUMNS)
-    .eq('id', id)
-    .maybeSingle()
+  // Resolves to Application[]; rejects with an Error the UI can show.
+  getMyApplications() {
+    return this.#repository.findAll()
+  }
+
+  // Decides what the details screen shows. Always resolves to
+  // { outcome, application, message } so the UI never handles database errors.
+  // A missing id, a malformed id, and another student's id are all NOT_FOUND.
+  async getApplicationDetails(id) {
+    if (!id?.trim()) {
+      return { outcome: DetailsOutcome.NOT_FOUND, application: null, message: null }
+    }
+
+    try {
+      const application = await this.#repository.findById(id)
+      return application
+        ? { outcome: DetailsOutcome.FOUND, application, message: null }
+        : { outcome: DetailsOutcome.NOT_FOUND, application: null, message: null }
+    } catch (error) {
+      return { outcome: DetailsOutcome.ERROR, application: null, message: error.message }
+    }
+  }
 }
