@@ -9,6 +9,18 @@ function ApplicationsList({ applications, loadError, onSelect }) {
     }
   }
 
+  if (applications.length === 0) {
+    return (
+      <section>
+        <h1 className="list-title">My Applications</h1>
+        <div className="list-card list-empty">
+          <p className="list-empty-title">No applications yet</p>
+          <p className="list-empty-text">Applications you add will show up here.</p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section>
       <h1 className="list-title">My Applications</h1>

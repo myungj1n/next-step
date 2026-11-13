@@ -1,20 +1,28 @@
 import { useState } from 'react'
-import { applicationStatuses } from '../data/applications.js'
+import { formatDate } from '../lib/formatDate.js'
+import { ApplicationStatus } from '../models/Application.js'
 import './ApplicationDetails.css'
 
-// Status pill styles (.status, .status-*) are shared with ApplicationsList.css.
-function ApplicationDetails({ application, loadError, onBack, onUpdateStatus }) {
-  const { company, position, status, deadline, notes } = application
-  const [selectedStatus, setSelectedStatus] = useState(status)
-  const [message, setMessage] = useState(loadError)
-  const [saved, setSaved] = useState(false)
+const applicationStatuses = Object.values(ApplicationStatus)
 
-  const handleSubmit = (event) => {
+// UI layer: the route passes in an Application model, what happens on back,
+// and how to save a new status (resolves to { success, error }).
+// Status pill styles (.status, .status-*) are shared with ApplicationsList.css.
+function ApplicationDetails({ application, onBack, onUpdateStatus }) {
+  const { company, position, status, deadline, notes, jobLink, resumeVersion } = application
+  const [selectedStatus, setSelectedStatus] = useState(status)
+  const [message, setMessage] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
     setMessage('')
     setSaved(false)
+    setSaving(true)
 
-    const result = onUpdateStatus(application.id, selectedStatus)
+    const result = await onUpdateStatus(selectedStatus)
+    setSaving(false)
     if (!result.success) {
       setMessage(result.error)
       return
@@ -44,7 +52,27 @@ function ApplicationDetails({ application, loadError, onBack, onUpdateStatus }) 
         </div>
         <div className="details-field">
           <dt>Deadline</dt>
-          <dd>{deadline}</dd>
+          <dd className={deadline ? undefined : 'details-empty'}>
+            {deadline ? formatDate(deadline) : 'No deadline'}
+          </dd>
+        </div>
+        <div className="details-field">
+          <dt>Job Link</dt>
+          <dd className={jobLink ? 'details-link' : 'details-empty'}>
+            {jobLink ? (
+              <a href={application.getSafeJobLink()} target="_blank" rel="noopener noreferrer">
+                {jobLink}
+              </a>
+            ) : (
+              'No link saved'
+            )}
+          </dd>
+        </div>
+        <div className="details-field">
+          <dt>Resume Version</dt>
+          <dd className={resumeVersion ? undefined : 'details-empty'}>
+            {resumeVersion || 'Not recorded'}
+          </dd>
         </div>
         <div className="details-field details-field-wide">
           <dt>Notes</dt>
@@ -70,8 +98,8 @@ function ApplicationDetails({ application, loadError, onBack, onUpdateStatus }) 
               </option>
             ))}
           </select>
-          <button type="submit" disabled={selectedStatus === status}>
-            Save status
+          <button type="submit" disabled={saving || selectedStatus === status}>
+            {saving ? 'Saving…' : 'Save status'}
           </button>
         </div>
         {message && (
