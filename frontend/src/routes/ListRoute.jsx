@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import ApplicationsList from '../pages/ApplicationsList.jsx'
-import { applications } from '../data/applications.js'
 
 // List → details navigation.
-function ListRoute() {
+function ListRoute({ applications, loadError }) {
   const navigate = useNavigate()
 
   return (
     <ApplicationsList
       applications={applications}
+      loadError={loadError}
       onSelect={(id) => navigate(`/applications/${id}`)}
     />
   )

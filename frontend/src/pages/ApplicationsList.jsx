@@ -1,7 +1,7 @@
 import './ApplicationsList.css'
 
 // Display only: the route component passes in the data and what happens on select.
-function ApplicationsList({ applications, onSelect }) {
+function ApplicationsList({ applications, loadError, onSelect }) {
   const handleKeyDown = (event, id) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
@@ -13,6 +13,11 @@ function ApplicationsList({ applications, onSelect }) {
     <section>
       <h1 className="list-title">My Applications</h1>
       <p className="list-subtitle">Select an application to view its details.</p>
+      {loadError && (
+        <p className="list-error" role="alert">
+          {loadError}
+        </p>
+      )}
 
       <div className="list-card">
         <table className="list-table">

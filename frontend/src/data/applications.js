@@ -1,5 +1,6 @@
 // Sample data for the View Applications MVP (no backend this sprint).
-// status is one of: Applied | Interviewing | Offer | Rejected
+export const applicationStatuses = ['Applied', 'Interviewing', 'Offer', 'Rejected']
+
 export const applications = [
   {
     id: 1,

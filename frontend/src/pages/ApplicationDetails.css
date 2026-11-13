@@ -77,8 +77,71 @@
   font-style: italic;
 }
 
+.status-form {
+  display: grid;
+  gap: 8px;
+  max-width: 420px;
+  margin-top: 24px;
+}
+
+.status-form label {
+  font-weight: 600;
+}
+
+.status-form-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.status-form select,
+.status-form button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.status-form select {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.status-form button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.status-form button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.status-form select:focus-visible,
+.status-form button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.status-message {
+  margin: 0;
+  color: #b42318;
+}
+
+.status-message-success {
+  color: #1d7a3d;
+}
+
 @media (max-width: 480px) {
   .details-card {
     grid-template-columns: 1fr;
+  }
+
+  .status-form-controls {
+    flex-direction: column;
   }
 }
