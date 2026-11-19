@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import './ApplicationsList.css'
 
 // Display only: the route component passes in the data and what happens on select.
 function ApplicationsList({ applications, loadError, onSelect }) {
+  const navigate = useNavigate()
   const handleKeyDown = (event, id) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
@@ -12,7 +14,12 @@ function ApplicationsList({ applications, loadError, onSelect }) {
   if (applications.length === 0) {
     return (
       <section>
-        <h1 className="list-title">My Applications</h1>
+        <div className="list-heading">
+          <h1 className="list-title">My Applications</h1>
+          <button type="button" className="list-add-button" onClick={() => navigate('/applications/add')}>
+            Add Application
+          </button>
+        </div>
         <div className="list-card list-empty">
           <p className="list-empty-title">No applications yet</p>
           <p className="list-empty-text">Applications you add will show up here.</p>
@@ -23,7 +30,12 @@ function ApplicationsList({ applications, loadError, onSelect }) {
 
   return (
     <section>
-      <h1 className="list-title">My Applications</h1>
+      <div className="list-heading">
+        <h1 className="list-title">My Applications</h1>
+        <button type="button" className="list-add-button" onClick={() => navigate('/applications/add')}>
+          Add Application
+        </button>
+      </div>
       <p className="list-subtitle">Select an application to view its details.</p>
       {loadError && (
         <p className="list-error" role="alert">

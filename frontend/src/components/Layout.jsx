@@ -5,7 +5,7 @@ import { signOut } from '../services/authService.js'
 // placeholders for upcoming features (set `to` once their route exists).
 const navItems = [
   { label: 'Applications', to: '/applications', icon: 'list' },
-  { label: 'Add Application', icon: 'plus' },
+  { label: 'Add Application', to: '/applications/add', icon: 'plus' },
   { label: 'Progress Summary', icon: 'chart' },
   { label: 'Reminders', icon: 'bell' },
   { label: 'AI Advisor', icon: 'sparkle' },
@@ -33,8 +33,11 @@ function Layout() {
   const { pathname } = useLocation()
   const { user } = useOutletContext()
 
-  // Active on the list and on any details page under it.
-  const isActive = (item) => pathname.startsWith(item.to)
+  // Applications is active on the list and detail pages; Add Application is active only on its own page.
+  const isActive = (item) =>
+    item.to === '/applications'
+      ? pathname === '/applications' || (pathname.startsWith('/applications/') && pathname !== '/applications/add')
+      : pathname === item.to
 
   return (
     <div className="layout">

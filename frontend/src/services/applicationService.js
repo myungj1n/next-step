@@ -15,6 +15,34 @@ export class ApplicationService {
     this.#repository = repository
   }
 
+  // Creates an application for the logged-in student with the initial Applied status.
+  async addApplication({ company, position }) {
+    const trimmedCompany = company?.trim()
+    const trimmedPosition = position?.trim()
+
+    if (!trimmedCompany || !trimmedPosition) {
+      return {
+        success: false,
+        application: null,
+        error: 'Enter both a company and position.',
+      }
+    }
+
+    try {
+      const application = await this.#repository.create({
+        company: trimmedCompany,
+        position: trimmedPosition,
+      })
+      return { success: true, application, error: null }
+    } catch (error) {
+      return {
+        success: false,
+        application: null,
+        error: `The application could not be saved. ${error.message}`,
+      }
+    }
+  }
+
   // Resolves to Application[]; rejects with an Error the UI can show.
   getMyApplications() {
     return this.#repository.findAll()
