@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import ApplicationDetails from '../pages/ApplicationDetails.jsx'
 import { applicationService } from '../services/index.js'
 import { DetailsOutcome } from '../services/applicationService.js'
@@ -11,7 +11,8 @@ function DetailsRoute() {
   const navigate = useNavigate()
   // The result remembers its id, so a result for a previous id counts as still loading.
   const [result, setResult] = useState(null)
-  const goBack = () => navigate('/applications')
+  const location = useLocation()
+  const goBack = () => navigate(`/applications${location.state?.listSearch ?? ''}`)
 
   useEffect(() => {
     let ignore = false
@@ -25,7 +26,7 @@ function DetailsRoute() {
 
   const backButton = (
     <button type="button" className="details-back" onClick={goBack}>
-      <span aria-hidden="true">←</span> Back to Applications
+      <span aria-hidden="true">←</span> All applications
     </button>
   )
 
@@ -53,7 +54,22 @@ function DetailsRoute() {
     )
   }
 
-  return <ApplicationDetails application={result.application} onBack={goBack} />
+  const saveNotes = async (notes) => {
+    const update = await applicationService.updateApplicationNotes(id, notes)
+    if (update.success) {
+      setResult((current) => (current?.id === id ? { ...current, application: update.application } : current))
+    }
+    return update
+  }
+
+  return (
+    <ApplicationDetails
+      key={result.application.id}
+      application={result.application}
+      onBack={goBack}
+      onSaveNotes={saveNotes}
+    />
+  )
 }
 
 export default DetailsRoute

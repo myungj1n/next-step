@@ -1,110 +1,359 @@
-.list-title {
-  margin: 0 0 4px;
-  font-size: 1.75rem;
+/* Applications page. Tokens (--ink, --brand, --status-*) come from .layout in index.css;
+   --tone comes from the tone-* classes in StepTrack.css. */
+
+.apps-header {
+  max-width: 62ch;
+  margin-bottom: 28px;
 }
 
-.list-subtitle {
-  margin: 0 0 24px;
-  color: var(--muted);
+.apps-title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.5rem + 1.6vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
 }
 
-.list-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow-x: auto;
-}
-
-.list-empty {
-  margin-top: 24px;
-  padding: 48px 24px;
-  text-align: center;
-}
-
-.list-empty-title {
-  margin: 0 0 4px;
-  font-weight: 600;
-}
-
-.list-empty-text {
+.apps-summary {
   margin: 0;
+  font-size: 1.05rem;
   color: var(--muted);
 }
 
-.list-table {
+.apps-summary strong {
+  color: var(--ink);
+}
+
+/* Pipeline: one proportional bar for the whole search, with the legend as filters. */
+.pipeline {
+  margin-bottom: 28px;
+}
+
+.pipeline-bar {
+  display: flex;
+  gap: 3px;
+  height: 14px;
+  margin-bottom: 14px;
+}
+
+.pipeline-segment {
+  flex-basis: 0;
+  min-width: 10px;
+  border-radius: 3px;
+  background: var(--tone);
+  transform-origin: left center;
+  animation: pipeline-grow 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition: opacity 0.2s;
+}
+
+.pipeline-segment:first-child {
+  border-radius: 7px 3px 3px 7px;
+}
+
+.pipeline-segment:last-child {
+  border-radius: 3px 7px 7px 3px;
+}
+
+.pipeline-segment:only-child {
+  border-radius: 7px;
+}
+
+.pipeline-segment.is-dimmed {
+  opacity: 0.18;
+}
+
+@keyframes pipeline-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-segment {
+    animation: none;
+  }
+}
+
+.pipeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pipeline-key {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: none;
+  font: inherit;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.pipeline-key::before {
+  content: '';
+  align-self: center;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--tone);
+}
+
+.pipeline-key:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.pipeline-key.is-active {
+  border-color: var(--tone);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.pipeline-count {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* Toolbar: search + status filter + sort. */
+.apps-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.apps-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  color: var(--muted);
+}
+
+.apps-search svg {
+  position: absolute;
+  left: 13px;
+  pointer-events: none;
+}
+
+.apps-search input,
+.apps-select select {
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.apps-search input {
+  width: 100%;
+  padding: 0 12px 0 38px;
+}
+
+.apps-search input::placeholder {
+  color: #94a3b8;
+}
+
+.apps-select select {
+  padding: 0 32px 0 12px;
+  cursor: pointer;
+}
+
+.apps-search input:focus,
+.apps-select select:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: var(--focus);
+}
+
+.apps-results {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.apps-clear {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* The list itself: one panel, rows divided by rules. */
+.apps-panel {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+}
+
+.apps-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.list-table th,
-.list-table td {
-  padding: 12px 16px;
-  text-align: left;
-}
-
-.list-table th {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
-
-.list-row {
-  cursor: pointer;
-}
-
-.list-row + .list-row td {
-  border-top: 1px solid var(--border);
-}
-
-.list-row:hover,
-.list-row:focus-visible {
-  background: var(--accent-soft);
-  outline: none;
-}
-
-.list-company {
-  font-weight: 600;
-}
-
-/* Status: small colored dot + dark text, matching the landing page.
-   Blue scale for progress, red only for Rejected. Also used by ApplicationDetails. */
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px 2px 9px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
+.apps-table th {
+  padding: 14px 20px 10px;
+  border-bottom: 1px solid var(--line);
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text);
+  font-weight: 700;
+  text-align: left;
+  color: var(--muted);
+}
+
+.apps-table td {
+  padding: 16px 20px;
+  vertical-align: middle;
+}
+
+.apps-row {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.apps-row + .apps-row td {
+  border-top: 1px solid var(--line);
+}
+
+.apps-row:hover {
+  background: #f8fafc;
+}
+
+.apps-row:focus-visible {
+  outline: none;
+  background: var(--brand-soft);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.apps-company {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.apps-position {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+.apps-progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   white-space: nowrap;
 }
 
-.status::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--muted);
+.apps-status {
+  font-weight: 700;
+  color: var(--tone);
 }
 
-.status-applied::before {
-  background: #93c5fd;
+.apps-date {
+  white-space: nowrap;
 }
 
-.status-interviewing::before {
-  background: #3b82f6;
+.apps-date span {
+  display: block;
 }
 
-.status-offer::before {
-  background: #1d4ed8;
+.apps-ago {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
-.status-rejected::before {
-  background: #ef4444;
+.apps-ago.is-waiting {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Empty states. */
+.apps-empty {
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.apps-empty-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.apps-empty-text {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.apps > .apps-panel.apps-empty {
+  margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+  .apps-select {
+    flex: 1 1 140px;
+  }
+
+  .apps-select select {
+    width: 100%;
+  }
+
+  /* Rows stack: name on top, progress and date side by side below. */
+  .apps-table thead {
+    display: none;
+  }
+
+  .apps-table,
+  .apps-table tbody {
+    display: block;
+  }
+
+  .apps-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px 12px;
+    padding: 16px;
+  }
+
+  .apps-row + .apps-row {
+    border-top: 1px solid var(--line);
+  }
+
+  .apps-table td,
+  .apps-row + .apps-row td {
+    padding: 0;
+    border: none;
+  }
+
+  .apps-cell-main {
+    grid-column: 1 / -1;
+  }
+
+  .apps-date {
+    text-align: right;
+    white-space: normal;
+  }
 }

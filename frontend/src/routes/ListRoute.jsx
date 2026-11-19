@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import ApplicationsList from '../pages/ApplicationsList.jsx'
 import { applicationService } from '../services/index.js'
 
 // Loads the logged-in student's applications and handles list → details navigation.
 function ListRoute() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [applications, setApplications] = useState(null) // null = still loading
   const [error, setError] = useState(null)
 
@@ -39,7 +40,10 @@ function ListRoute() {
   return (
     <ApplicationsList
       applications={applications}
-      onSelect={(id) => navigate(`/applications/${id}`)}
+      onSelect={(id) =>
+        // Remember the current search/filter/sort so "Back" returns to the same view.
+        navigate(`/applications/${id}`, { state: { listSearch: location.search } })
+      }
     />
   )
 }

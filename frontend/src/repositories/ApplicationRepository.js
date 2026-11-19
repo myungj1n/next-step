@@ -10,4 +10,9 @@ export class ApplicationRepository {
   async findById(_id) {
     throw new Error('findById() not implemented')
   }
+
+  // Saves new notes and resolves to the updated Application, or null when not found.
+  async updateNotes(_id, _notes) {
+    throw new Error('updateNotes() not implemented')
+  }
 }
