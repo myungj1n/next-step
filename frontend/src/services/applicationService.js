@@ -86,4 +86,33 @@ export class ApplicationService {
       }
     }
   }
+
+  async updateApplicationDetails(id, { company, position }) {
+    const trimmedCompany = company?.trim()
+    const trimmedPosition = position?.trim()
+
+    if (!trimmedCompany || !trimmedPosition) {
+      return {
+        success: false,
+        application: null,
+        error: 'Enter both a company and position.',
+      }
+    }
+
+    try {
+      const application = await this.#repository.updateDetails(id, {
+        company: trimmedCompany,
+        position: trimmedPosition,
+      })
+      return application
+        ? { success: true, application, error: null }
+        : { success: false, application: null, error: 'This application could not be found.' }
+    } catch (error) {
+      return {
+        success: false,
+        application: null,
+        error: `Your application details could not be saved. ${error.message}`,
+      }
+    }
+  }
 }

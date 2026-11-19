@@ -67,6 +67,18 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
     return data ? this.#toApplication(data) : null
   }
 
+  async updateDetails(id, details) {
+    const { data, error } = await this.#client
+      .from('applications')
+      .update({ company: details.company, position: details.position })
+      .eq('id', id)
+      .select(COLUMNS)
+      .maybeSingle()
+    if (error?.code === INVALID_UUID) return null
+    if (error) throw new Error(error.message)
+    return data ? this.#toApplication(data) : null
+  }
+
   // Maps database column names to the domain model.
   #toApplication(row) {
     return new Application({

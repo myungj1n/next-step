@@ -59,12 +59,19 @@ function DetailsRoute() {
     return update
   }
 
+  const updateDetails = async (details) => {
+    const update = await applicationService.updateApplicationDetails(id, details)
+    if (update.success) setResult({ ...result, application: update.application })
+    return update
+  }
+
   return (
     <ApplicationDetails
       key={result.application.id}
       application={result.application}
       onBack={goBack}
       onUpdateStatus={updateStatus}
+      onUpdateDetails={updateDetails}
     />
   )
 }
