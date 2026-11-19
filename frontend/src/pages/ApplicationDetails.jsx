@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import StepTrack from '../components/StepTrack.jsx'
 import { daysAgo, formatDate, formatShortDate } from '../lib/formatDate.js'
+import { ApplicationStatus } from '../models/Application.js'
 import { MAX_NOTES_LENGTH } from '../services/applicationService.js'
 import './ApplicationDetails.css'
 
+const applicationStatuses = Object.values(ApplicationStatus)
+
 // UI layer: the route passes in an Application model, what happens on back,
-// and how to save notes (onSaveNotes resolves to { success, error }).
+// and how to save notes and status (onSaveNotes and onUpdateStatus resolve to { success, error }).
 // Status pill styles (.status, .status-*) are shared with ApplicationsList.css.
-function ApplicationDetails({ application, onBack, onSaveNotes }) {
+function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus }) {
   const { company, position, status, deadline, notes, jobLink, resumeVersion, createdAt } =
     application
   const [editingNotes, setEditingNotes] = useState(false)
@@ -15,6 +18,10 @@ function ApplicationDetails({ application, onBack, onSaveNotes }) {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [saved, setSaved] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState(status)
+  const [statusMessage, setStatusMessage] = useState('')
+  const [statusSaved, setStatusSaved] = useState(false)
+  const [statusSaving, setStatusSaving] = useState(false)
 
   const startEditing = () => {
     setDraft(notes ?? '')
@@ -52,6 +59,21 @@ function ApplicationDetails({ application, onBack, onSaveNotes }) {
     return () => clearTimeout(timer)
   }, [saved, message])
 
+  const handleSaveStatus = async (event) => {
+    event.preventDefault()
+    setStatusMessage('')
+    setStatusSaved(false)
+    setStatusSaving(true)
+    const result = await onUpdateStatus(selectedStatus)
+    setStatusSaving(false)
+    if (!result.success) {
+      setStatusMessage(result.error)
+      return
+    }
+    setStatusSaved(true)
+    setStatusMessage('Application status saved.')
+  }
+
   return (
     <section>
       <button type="button" className="details-back" onClick={onBack}>
@@ -66,6 +88,38 @@ function ApplicationDetails({ application, onBack, onSaveNotes }) {
       <div className="details-track">
         <StepTrack status={status} size="large" />
       </div>
+
+      <form className="status-form" onSubmit={handleSaveStatus}>
+        <label htmlFor="application-status">Update status</label>
+        <div className="status-form-controls">
+          <select
+            id="application-status"
+            value={selectedStatus}
+            onChange={(event) => {
+              setSelectedStatus(event.target.value)
+              setStatusMessage('')
+              setStatusSaved(false)
+            }}
+          >
+            {applicationStatuses.map((applicationStatus) => (
+              <option key={applicationStatus} value={applicationStatus}>
+                {applicationStatus}
+              </option>
+            ))}
+          </select>
+          <button type="submit" disabled={statusSaving || selectedStatus === status}>
+            {statusSaving ? 'Saving…' : 'Save status'}
+          </button>
+        </div>
+        {statusMessage && (
+          <p
+            className={statusSaved ? 'status-message status-message-success' : 'status-message'}
+            role={statusSaved ? 'status' : 'alert'}
+          >
+            {statusMessage}
+          </p>
+        )}
+      </form>
 
       <dl className="details-facts">
         <div className="details-field">

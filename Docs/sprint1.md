@@ -2,9 +2,9 @@
 
 ## Sprint Goal
 
-Build a working GUI for the **View Applications** feature that matches our storyboard. Students see a list of sample internship applications, click one to view its details, and go back to the list.
+Build a working GUI for the **View Applications** feature that matches our storyboard. Students see a list of sample internship applications, click one to view its details, update its status, and go back to the list.
 
-No backend, database, or business logic this sprint. The data is hardcoded sample data.
+There is no backend or database in this frontend MVP. Application details are hardcoded sample data, and status changes are saved in browser local storage.
 
 ## Tasks
 
@@ -97,7 +97,7 @@ Next Step is a three-part web app:
 
 ### Sprint 1 Frontend
 
-In Sprint 1 the frontend reads from a local sample data file instead of the backend:
+In this frontend MVP the application details come from a local sample data file instead of the backend. Status changes are saved in browser local storage:
 
 ```
 applications.js (sample data)
@@ -106,7 +106,7 @@ applications.js (sample data)
   Route components ──── navigation (useNavigate / useParams)
         │
         ▼
-   Page components ──── display only
+   Application details page ──── status selection and save
 ```
 
 **Routes:**
@@ -135,10 +135,10 @@ frontend/
     routes/DetailsRoute.jsx      details → back navigation   (Task 4)
 ```
 
-**Component contracts.** Pages only display data. The route components pass in the data and the navigation behavior:
+**Component contracts.** Route components pass in data and navigation behavior. The details page submits status changes to app state, which persists statuses in browser local storage:
 
-- `ApplicationsList` receives `{ applications, onSelect(id) }`
-- `ApplicationDetails` receives `{ application, onBack() }`
+- `ApplicationsList` receives `{ applications, loadError, onSelect(id) }`
+- `ApplicationDetails` receives `{ application, loadError, onBack(), onUpdateStatus(id, status) }`
 
 **Sample data shape:**
 

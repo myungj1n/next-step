@@ -1,5 +1,6 @@
 // Application layer: business logic for viewing applications.
 // Depends only on the ApplicationRepository abstraction, passed in by services/index.js.
+import { ApplicationStatus } from '../models/Application.js'
 
 export const MAX_NOTES_LENGTH = 2000
 
@@ -51,8 +52,23 @@ export class ApplicationService {
       }
     }
 
+    return this.#saveUpdate(() => this.#repository.updateNotes(id, trimmed || null), 'notes')
+  }
+
+  // Business rule: only the known statuses are allowed. Always resolves to
+  // { success, application, error } so the UI never handles database errors.
+  async updateApplicationStatus(id, status) {
+    if (!Object.values(ApplicationStatus).includes(status)) {
+      return { success: false, application: null, error: 'Choose a valid application status.' }
+    }
+
+    return this.#saveUpdate(() => this.#repository.updateStatus(id, status), 'status')
+  }
+
+  // Runs a repository update and turns its result into { success, application, error }.
+  async #saveUpdate(update, what) {
     try {
-      const application = await this.#repository.updateNotes(id, trimmed || null)
+      const application = await update()
       return application
         ? { success: true, application, error: null }
         : { success: false, application: null, error: 'This application could not be found.' }
@@ -60,7 +76,7 @@ export class ApplicationService {
       return {
         success: false,
         application: null,
-        error: `Your notes could not be saved. ${error.message}`,
+        error: `Your ${what} could not be saved. ${error.message}`,
       }
     }
   }

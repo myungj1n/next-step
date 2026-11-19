@@ -54,13 +54,17 @@ function DetailsRoute() {
     )
   }
 
-  const saveNotes = async (notes) => {
-    const update = await applicationService.updateApplicationNotes(id, notes)
+  // Swaps in the saved application, unless the user has already moved to another one.
+  const applyUpdate = (update) => {
     if (update.success) {
       setResult((current) => (current?.id === id ? { ...current, application: update.application } : current))
     }
     return update
   }
+
+  const saveNotes = async (notes) => applyUpdate(await applicationService.updateApplicationNotes(id, notes))
+
+  const updateStatus = async (status) => applyUpdate(await applicationService.updateApplicationStatus(id, status))
 
   return (
     <ApplicationDetails
@@ -68,6 +72,7 @@ function DetailsRoute() {
       application={result.application}
       onBack={goBack}
       onSaveNotes={saveNotes}
+      onUpdateStatus={updateStatus}
     />
   )
 }

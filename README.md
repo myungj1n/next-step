@@ -10,4 +10,4 @@ Our project is a web application that helps students organize and track their in
 * **Version Control:** GitHub for collaboration and feature development
 * **Deployment:** Vercel + Render + Supabase
 
-Our goal is to build a simple, user-friendly dashboard that makes managing internship applications easier and more organized.
+Students can view their internship applications, open an application's details, and update its status. Status updates are saved in the browser for this frontend MVP; backend and database integration are planned for a later sprint.

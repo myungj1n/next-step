@@ -37,9 +37,18 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
   }
 
   async updateNotes(id, notes) {
+    return this.#update(id, { notes })
+  }
+
+  async updateStatus(id, status) {
+    return this.#update(id, { status })
+  }
+
+  // Updates one row and resolves to the updated Application, or null when not found.
+  async #update(id, changes) {
     const { data, error } = await this.#client
       .from('applications')
-      .update({ notes })
+      .update(changes)
       .eq('id', id)
       .select(COLUMNS)
       .maybeSingle()

@@ -15,4 +15,9 @@ export class ApplicationRepository {
   async updateNotes(_id, _notes) {
     throw new Error('updateNotes() not implemented')
   }
+
+  // Saves a new status and resolves to the updated Application, or null when not found.
+  async updateStatus(_id, _status) {
+    throw new Error('updateStatus() not implemented')
+  }
 }
