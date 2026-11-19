@@ -89,7 +89,7 @@ function LandingPage() {
     getSession().then(({ data }) => setLoggedIn(Boolean(data.session)))
   }, [])
 
-  const ctaTarget = loggedIn ? '/applications' : '/login'
+  const ctaTarget = loggedIn ? '/overview' : '/login'
   const ctaState = loggedIn ? undefined : { mode: 'signup' }
 
   return (
@@ -108,8 +108,8 @@ function LandingPage() {
           </nav>
           <nav className="lp-header-actions" aria-label="Account">
             {loggedIn ? (
-              <Link to="/applications" className="lp-btn lp-btn-primary">
-                My Applications
+              <Link to="/overview" className="lp-btn lp-btn-primary">
+                My dashboard
               </Link>
             ) : (
               <>

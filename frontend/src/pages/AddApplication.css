@@ -126,3 +126,14 @@
     width: 100%;
   }
 }
+
+.add-optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.add-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}

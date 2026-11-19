@@ -166,8 +166,16 @@
   color: #94a3b8;
 }
 
+/* Custom chevron instead of the native arrow, so both dropdowns put it
+   in the same spot: 14px from the right edge, vertically centered. */
 .apps-select select {
-  padding: 0 32px 0 12px;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 40px 0 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 14px center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
   cursor: pointer;
 }
 

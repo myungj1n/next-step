@@ -463,3 +463,8 @@
     padding: 18px;
   }
 }
+
+.details-edit-optional {
+  font-weight: 400;
+  color: var(--muted);
+}

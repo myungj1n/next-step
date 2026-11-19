@@ -4,6 +4,7 @@ import './AddApplication.css'
 function AddApplication({ onSubmit, onCancel }) {
   const [company, setCompany] = useState('')
   const [position, setPosition] = useState('')
+  const [deadline, setDeadline] = useState('')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -12,7 +13,7 @@ function AddApplication({ onSubmit, onCancel }) {
     setError('')
     setSaving(true)
 
-    const result = await onSubmit({ company, position })
+    const result = await onSubmit({ company, position, deadline })
     setSaving(false)
     if (!result.success) setError(result.error)
   }
@@ -24,7 +25,7 @@ function AddApplication({ onSubmit, onCancel }) {
       </button>
 
       <h1 className="add-title">Add Application</h1>
-      <p className="add-subtitle">Add the company and position you applied for.</p>
+      <p className="add-subtitle">Add the company and position you applied for, plus a deadline if there is one.</p>
 
       <form className="add-form" onSubmit={handleSubmit}>
         <div className="add-field">
@@ -52,6 +53,20 @@ function AddApplication({ onSubmit, onCancel }) {
             placeholder="Example: Software Engineer Intern"
             required
           />
+        </div>
+
+        <div className="add-field">
+          <label htmlFor="deadline">
+            Deadline <span className="add-optional">(optional)</span>
+          </label>
+          <input
+            id="deadline"
+            name="deadline"
+            type="date"
+            value={deadline}
+            onChange={(event) => setDeadline(event.target.value)}
+          />
+          <p className="add-hint">Shows up on your Overview calendar.</p>
         </div>
 
         {error && (

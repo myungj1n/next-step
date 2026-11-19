@@ -6,8 +6,8 @@ function AddApplicationRoute() {
   const navigate = useNavigate()
   const goBack = () => navigate('/applications')
 
-  const handleSubmit = async ({ company, position }) => {
-    const result = await applicationService.addApplication({ company, position })
+  const handleSubmit = async (details) => {
+    const result = await applicationService.addApplication(details)
     if (result.success) navigate('/applications')
     return result
   }

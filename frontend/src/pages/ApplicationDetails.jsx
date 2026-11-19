@@ -8,7 +8,7 @@ import './ApplicationDetails.css'
 const applicationStatuses = Object.values(ApplicationStatus)
 
 // UI layer: the route passes in an Application model, what happens on back, and how to
-// save notes, status, and company/position (onSaveNotes, onUpdateStatus, and onUpdateDetails
+// save notes, status, and company/position/deadline (onSaveNotes, onUpdateStatus, and onUpdateDetails
 // resolve to { success, application, error }).
 // Status pill styles (.status, .status-*) are shared with ApplicationsList.css.
 function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, onUpdateDetails }) {
@@ -26,6 +26,7 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, 
   const [editingDetails, setEditingDetails] = useState(false)
   const [editedCompany, setEditedCompany] = useState(company)
   const [editedPosition, setEditedPosition] = useState(position)
+  const [editedDeadline, setEditedDeadline] = useState(deadline ?? '')
   const [detailsMessage, setDetailsMessage] = useState('')
   const [detailsSaved, setDetailsSaved] = useState(false)
   const [savingDetails, setSavingDetails] = useState(false)
@@ -87,7 +88,11 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, 
     setDetailsSaved(false)
     setSavingDetails(true)
 
-    const result = await onUpdateDetails({ company: editedCompany, position: editedPosition })
+    const result = await onUpdateDetails({
+      company: editedCompany,
+      position: editedPosition,
+      deadline: editedDeadline,
+    })
     setSavingDetails(false)
     if (!result.success) {
       setDetailsMessage(result.error)
@@ -96,6 +101,7 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, 
 
     setEditedCompany(result.application.company)
     setEditedPosition(result.application.position)
+    setEditedDeadline(result.application.deadline ?? '')
     setEditingDetails(false)
     setDetailsMessage('Application details saved.')
     setDetailsSaved(true)
@@ -104,6 +110,7 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, 
   const cancelDetailsEdit = () => {
     setEditedCompany(company)
     setEditedPosition(position)
+    setEditedDeadline(deadline ?? '')
     setDetailsMessage('')
     setDetailsSaved(false)
     setEditingDetails(false)
@@ -160,6 +167,18 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, 
               value={editedPosition}
               onChange={(event) => setEditedPosition(event.target.value)}
               required
+            />
+          </div>
+          <div className="details-edit-field">
+            <label htmlFor="edit-deadline">
+              Deadline <span className="details-edit-optional">(optional)</span>
+            </label>
+            <input
+              id="edit-deadline"
+              name="deadline"
+              type="date"
+              value={editedDeadline}
+              onChange={(event) => setEditedDeadline(event.target.value)}
             />
           </div>
           {detailsMessage && (
