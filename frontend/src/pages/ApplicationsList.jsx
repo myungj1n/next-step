@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import StepTrack from '../components/StepTrack.jsx'
 import { ApplicationStatus, statusSlug } from '../models/Application.js'
 import {
@@ -72,7 +72,12 @@ function ApplicationsList({ applications, onSelect }) {
   if (applications.length === 0) {
     return (
       <section className="apps">
-        <h1 className="apps-title">My applications</h1>
+        <div className="apps-heading">
+          <h1 className="apps-title">My applications</h1>
+          <Link to="/applications/add" className="apps-add">
+            <span aria-hidden="true">+</span> Add application
+          </Link>
+        </div>
         <div className="apps-panel apps-empty">
           <p className="apps-empty-title">Nothing tracked yet</p>
           <p className="apps-empty-text">
@@ -86,7 +91,12 @@ function ApplicationsList({ applications, onSelect }) {
   return (
     <section className="apps">
       <header className="apps-header">
-        <h1 className="apps-title">My applications</h1>
+        <div className="apps-heading">
+          <h1 className="apps-title">My applications</h1>
+          <Link to="/applications/add" className="apps-add">
+            <span aria-hidden="true">+</span> Add application
+          </Link>
+        </div>
         <p className="apps-summary">
           {plural(applications.length, 'application')} tracked.
           {waiting > 0 && (

@@ -4,6 +4,7 @@ import RequireAuth from './components/RequireAuth.jsx'
 import LandingPage from './pages/LandingPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ListRoute from './routes/ListRoute.jsx'
+import AddApplicationRoute from './routes/AddApplicationRoute.jsx'
 import DetailsRoute from './routes/DetailsRoute.jsx'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
             <Route path="/applications" element={<ListRoute />} />
+            <Route path="/applications/add" element={<AddApplicationRoute />} />
             <Route path="/applications/:id" element={<DetailsRoute />} />
           </Route>
         </Route>

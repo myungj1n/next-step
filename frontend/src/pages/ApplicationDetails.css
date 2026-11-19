@@ -40,6 +40,89 @@
   color: var(--muted);
 }
 
+/* Edit company and position: a toggle under the header that opens a small form. */
+.details-edit-toggle {
+  min-height: 40px;
+  margin-bottom: 20px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.details-edit-form {
+  display: grid;
+  gap: 16px;
+  max-width: 620px;
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+}
+
+.details-edit-field {
+  display: grid;
+  gap: 8px;
+}
+
+.details-edit-field label {
+  font-weight: 600;
+}
+
+.details-edit-field input {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  font: inherit;
+  color: var(--text);
+}
+
+.details-edit-field input:focus-visible,
+.details-edit-toggle:focus-visible,
+.details-edit-actions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.details-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.details-edit-actions button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.details-edit-actions button[type='submit'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.details-edit-actions button[type='submit']:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.details-edit-actions button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 /* The large step track: the focal point of the page. */
 .details-track {
   max-width: 560px;
@@ -362,6 +445,14 @@
 @media (max-width: 560px) {
   .details-facts {
     grid-template-columns: 1fr;
+  }
+
+  .details-edit-actions {
+    flex-direction: column-reverse;
+  }
+
+  .details-edit-actions button {
+    width: 100%;
   }
 
   .status-form-controls {

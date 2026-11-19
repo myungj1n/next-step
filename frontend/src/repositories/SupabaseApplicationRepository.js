@@ -1,4 +1,4 @@
-import { Application } from '../models/Application.js'
+import { Application, ApplicationStatus } from '../models/Application.js'
 import { ApplicationRepository } from './ApplicationRepository.js'
 
 const COLUMNS = 'id, company, position, status, deadline, notes, job_link, resume_version, created_at'
@@ -14,6 +14,25 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
   constructor(client) {
     super()
     this.#client = client
+  }
+
+  async create(application) {
+    const { data: userData, error: userError } = await this.#client.auth.getUser()
+    if (userError) throw new Error(userError.message)
+    if (!userData.user) throw new Error('You must be logged in to add an application.')
+
+    const { data, error } = await this.#client
+      .from('applications')
+      .insert({
+        user_id: userData.user.id,
+        company: application.company,
+        position: application.position,
+        status: ApplicationStatus.APPLIED,
+      })
+      .select(COLUMNS)
+      .single()
+    if (error) throw new Error(error.message)
+    return this.#toApplication(data)
   }
 
   async findAll() {
@@ -42,6 +61,10 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
 
   async updateStatus(id, status) {
     return this.#update(id, { status })
+  }
+
+  async updateDetails(id, { company, position }) {
+    return this.#update(id, { company, position })
   }
 
   // Updates one row and resolves to the updated Application, or null when not found.

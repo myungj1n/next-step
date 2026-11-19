@@ -66,6 +66,9 @@ function DetailsRoute() {
 
   const updateStatus = async (status) => applyUpdate(await applicationService.updateApplicationStatus(id, status))
 
+  const updateDetails = async (details) =>
+    applyUpdate(await applicationService.updateApplicationDetails(id, details))
+
   return (
     <ApplicationDetails
       key={result.application.id}
@@ -73,6 +76,7 @@ function DetailsRoute() {
       onBack={goBack}
       onSaveNotes={saveNotes}
       onUpdateStatus={updateStatus}
+      onUpdateDetails={updateDetails}
     />
   )
 }

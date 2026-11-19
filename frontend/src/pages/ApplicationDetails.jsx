@@ -7,10 +7,11 @@ import './ApplicationDetails.css'
 
 const applicationStatuses = Object.values(ApplicationStatus)
 
-// UI layer: the route passes in an Application model, what happens on back,
-// and how to save notes and status (onSaveNotes and onUpdateStatus resolve to { success, error }).
+// UI layer: the route passes in an Application model, what happens on back, and how to
+// save notes, status, and company/position (onSaveNotes, onUpdateStatus, and onUpdateDetails
+// resolve to { success, application, error }).
 // Status pill styles (.status, .status-*) are shared with ApplicationsList.css.
-function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus }) {
+function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus, onUpdateDetails }) {
   const { company, position, status, deadline, notes, jobLink, resumeVersion, createdAt } =
     application
   const [editingNotes, setEditingNotes] = useState(false)
@@ -22,6 +23,12 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus }
   const [statusMessage, setStatusMessage] = useState('')
   const [statusSaved, setStatusSaved] = useState(false)
   const [statusSaving, setStatusSaving] = useState(false)
+  const [editingDetails, setEditingDetails] = useState(false)
+  const [editedCompany, setEditedCompany] = useState(company)
+  const [editedPosition, setEditedPosition] = useState(position)
+  const [detailsMessage, setDetailsMessage] = useState('')
+  const [detailsSaved, setDetailsSaved] = useState(false)
+  const [savingDetails, setSavingDetails] = useState(false)
 
   const startEditing = () => {
     setDraft(notes ?? '')
@@ -74,6 +81,34 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus }
     setStatusMessage('Application status saved.')
   }
 
+  const handleDetailsSubmit = async (event) => {
+    event.preventDefault()
+    setDetailsMessage('')
+    setDetailsSaved(false)
+    setSavingDetails(true)
+
+    const result = await onUpdateDetails({ company: editedCompany, position: editedPosition })
+    setSavingDetails(false)
+    if (!result.success) {
+      setDetailsMessage(result.error)
+      return
+    }
+
+    setEditedCompany(result.application.company)
+    setEditedPosition(result.application.position)
+    setEditingDetails(false)
+    setDetailsMessage('Application details saved.')
+    setDetailsSaved(true)
+  }
+
+  const cancelDetailsEdit = () => {
+    setEditedCompany(company)
+    setEditedPosition(position)
+    setDetailsMessage('')
+    setDetailsSaved(false)
+    setEditingDetails(false)
+  }
+
   return (
     <section>
       <button type="button" className="details-back" onClick={onBack}>
@@ -84,6 +119,72 @@ function ApplicationDetails({ application, onBack, onSaveNotes, onUpdateStatus }
         <h1 className="details-title">{company}</h1>
         <p className="details-position">{position}</p>
       </header>
+
+      <button
+        type="button"
+        className="details-edit-toggle"
+        onClick={() => {
+          if (editingDetails) {
+            cancelDetailsEdit()
+          } else {
+            setDetailsMessage('')
+            setDetailsSaved(false)
+            setEditingDetails(true)
+          }
+        }}
+        aria-expanded={editingDetails}
+      >
+        {editingDetails ? 'Close editor' : 'Edit application'}
+      </button>
+
+      {editingDetails && (
+        <form className="details-edit-form" onSubmit={handleDetailsSubmit}>
+          <div className="details-edit-field">
+            <label htmlFor="edit-company">Company</label>
+            <input
+              id="edit-company"
+              name="company"
+              type="text"
+              value={editedCompany}
+              onChange={(event) => setEditedCompany(event.target.value)}
+              autoComplete="organization"
+              required
+            />
+          </div>
+          <div className="details-edit-field">
+            <label htmlFor="edit-position">Position</label>
+            <input
+              id="edit-position"
+              name="position"
+              type="text"
+              value={editedPosition}
+              onChange={(event) => setEditedPosition(event.target.value)}
+              required
+            />
+          </div>
+          {detailsMessage && (
+            <p
+              className={detailsSaved ? 'status-message status-message-success' : 'status-message'}
+              role={detailsSaved ? 'status' : 'alert'}
+            >
+              {detailsMessage}
+            </p>
+          )}
+          <div className="details-edit-actions">
+            <button type="button" onClick={cancelDetailsEdit} disabled={savingDetails}>
+              Cancel
+            </button>
+            <button type="submit" disabled={savingDetails}>
+              {savingDetails ? 'Saving…' : 'Save changes'}
+            </button>
+          </div>
+        </form>
+      )}
+      {!editingDetails && detailsMessage && (
+        <p className="status-message status-message-success" role="status">
+          {detailsMessage}
+        </p>
+      )}
 
       <div className="details-track">
         <StepTrack status={status} size="large" />
