@@ -119,7 +119,7 @@ function LoginPage() {
                 <strong>Google</strong>
                 <small>SWE Intern</small>
               </span>
-              <span className="auth-preview-status auth-preview-interviewing">Interviewing</span>
+              <span className="auth-preview-status auth-preview-interviewing">Interview</span>
             </div>
             <div className="auth-preview-row">
               <span className="auth-preview-logo">C</span>

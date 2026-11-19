@@ -5,8 +5,8 @@ import { signOut } from '../services/authService.js'
 // placeholders for upcoming features (set `to` once their route exists).
 const navItems = [
   { label: 'Applications', to: '/applications', icon: 'list' },
-  { label: 'Add Application', icon: 'plus' },
-  { label: 'Progress Summary', icon: 'chart' },
+  { label: 'Add application', icon: 'plus' },
+  { label: 'Progress summary', icon: 'chart' },
   { label: 'Reminders', icon: 'bell' },
   { label: 'AI Advisor', icon: 'sparkle' },
 ]
@@ -27,6 +27,15 @@ function NavIcon({ name }) {
   )
 }
 
+// Same logo mark as the landing page header.
+function BrandMark() {
+  return (
+    <span className="brand-mark" aria-hidden="true">
+      N
+    </span>
+  )
+}
+
 // Shared sidebar navigation and page container for every screen.
 // Logging out needs no redirect here: RequireAuth sees the session end and sends the user to /login.
 function Layout() {
@@ -39,7 +48,8 @@ function Layout() {
   return (
     <div className="layout">
       <aside className="sidebar">
-        <Link to="/" className="brand">
+        <Link to="/applications" className="brand">
+          <BrandMark />
           Next Step
         </Link>
         <nav aria-label="Main">

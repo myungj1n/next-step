@@ -23,7 +23,7 @@ function Icon({ name }) {
 // Status shown as a small colored dot with dark text, so color stays a small accent.
 function StatusBadge({ status }) {
   return (
-    <span className={`lp-status lp-status-${status.toLowerCase()}`}>
+    <span className={`lp-status lp-status-${status.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>
       <span className="lp-status-dot" aria-hidden="true" />
       {status}
     </span>
@@ -67,10 +67,10 @@ const team = ['Quan Huynh', 'Ferris Abouelfadl', 'Joseph Park', 'Adit Reddy']
 
 // Sample rows for the decorative dashboard preview in the hero.
 const previewRows = [
-  { company: 'Google', position: 'SWE Intern', status: 'Interviewing' },
+  { company: 'Google', position: 'SWE Intern', status: 'Final interview' },
   { company: 'Microsoft', position: 'SWE Intern', status: 'Applied' },
   { company: 'Capital One', position: 'Technology Intern', status: 'Offer' },
-  { company: 'Amazon', position: 'SDE Intern', status: 'Applied' },
+  { company: 'Amazon', position: 'SDE Intern', status: 'Phone call' },
   { company: 'Meta', position: 'Software Engineer Intern', status: 'Rejected' },
 ]
 
@@ -181,7 +181,7 @@ function LandingPage() {
                       <div>
                         <dt>Status</dt>
                         <dd>
-                          <StatusBadge status="Interviewing" />
+                          <StatusBadge status="Final interview" />
                         </dd>
                       </div>
                       <div>

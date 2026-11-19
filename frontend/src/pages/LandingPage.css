@@ -419,19 +419,27 @@
 }
 
 .lp-status-applied .lp-status-dot {
-  background: var(--lp-blue-soft);
+  background: #2563eb;
 }
 
-.lp-status-interviewing .lp-status-dot {
-  background: var(--lp-blue-light);
+.lp-status-phone-call .lp-status-dot {
+  background: #0891b2;
+}
+
+.lp-status-interview .lp-status-dot {
+  background: #d97706;
+}
+
+.lp-status-final-interview .lp-status-dot {
+  background: #7c3aed;
 }
 
 .lp-status-offer .lp-status-dot {
-  background: var(--lp-blue-hover);
+  background: #16a34a;
 }
 
 .lp-status-rejected .lp-status-dot {
-  background: var(--lp-red);
+  background: #dc2626;
 }
 
 .lp-preview-detail {

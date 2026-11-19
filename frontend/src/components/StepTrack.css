@@ -1,0 +1,147 @@
+/* Step track. --tone comes from the status; the track inherits app tokens from .layout. */
+.step-track {
+  --tone: var(--status-applied);
+  --dot: 10px;
+  --line: 2px;
+  --idle: var(--line-strong);
+}
+
+.tone-applied { --tone: var(--status-applied); }
+.tone-phone-call { --tone: var(--status-phone-call); }
+.tone-interview { --tone: var(--status-interview); }
+.tone-final-interview { --tone: var(--status-final-interview); }
+.tone-offer { --tone: var(--status-offer); }
+.tone-rejected { --tone: var(--status-rejected); }
+.tone-withdrawn { --tone: var(--status-withdrawn); }
+
+.step-track-stops {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 1 0;
+}
+
+.step-stop:last-child {
+  flex: 0 0 auto;
+}
+
+/* The line from this stop to the next. */
+.step-stop:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--dot) / 2 - var(--line) / 2);
+  left: var(--dot);
+  right: 0;
+  height: var(--line);
+  background: var(--idle);
+}
+
+.step-stop.line-done::after {
+  background: var(--tone);
+}
+
+.step-stop.line-cut::after {
+  background: repeating-linear-gradient(90deg, var(--tone) 0 4px, transparent 4px 7px);
+  opacity: 0.7;
+}
+
+.step-dot {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--dot);
+  height: var(--dot);
+  border: var(--line) solid var(--idle);
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.is-done .step-dot {
+  border-color: var(--tone);
+  background: var(--tone);
+}
+
+.is-current .step-dot {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 22%, transparent);
+}
+
+.is-cut .step-dot {
+  opacity: 0.35;
+}
+
+/* Small: inline in list rows. */
+.step-track-small {
+  width: 124px;
+}
+
+/* Large: the head of the details page, with stop names. */
+.step-track-large {
+  --dot: 20px;
+  --line: 3px;
+}
+
+.step-track-large .step-stop:last-child {
+  align-items: flex-end;
+}
+
+.step-track-large .step-stop:last-child .step-name {
+  text-align: right;
+}
+
+.step-track-large .step-stop:not(:first-child):not(:last-child) .step-name {
+  text-align: center;
+  transform: translateX(calc(-50% + var(--dot) / 2));
+}
+
+.step-name {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+.step-track-large .is-done .step-name {
+  color: var(--ink);
+}
+
+.step-track-large .is-current .step-name {
+  font-weight: 700;
+  color: var(--tone);
+}
+
+.step-track-large .is-cut .step-name {
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+.step-closed {
+  margin: 14px 0 0;
+  font-weight: 700;
+  color: var(--tone);
+}
+
+.step-caption {
+  display: none;
+  margin: 12px 0 0;
+  font-weight: 700;
+  color: var(--tone);
+}
+
+/* Five names don't fit side by side on a phone: show one caption instead. */
+@media (max-width: 560px) {
+  .step-track-large .step-name {
+    display: none;
+  }
+
+  .step-caption {
+    display: block;
+  }
+}

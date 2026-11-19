@@ -26,9 +26,57 @@ body {
   background: var(--bg);
 }
 
+/* ---------------------------------------------------------------
+   Signed-in app (everything inside <Layout>). Same blue and white palette,
+   system font, and radii as the landing (.lp) and login pages.
+   --------------------------------------------------------------- */
 .layout {
+  --mist: #f5f8ff;
+  --surface: #ffffff;
+  --ink: #0f172a;
+  --text: var(--ink);
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --border: var(--line);
+  --brand: #2563eb;
+  --brand-hover: #1d4ed8;
+  --brand-soft: #eff6ff;
+  --accent: var(--brand);
+  --accent-hover: var(--brand-hover);
+  --accent-soft: var(--brand-soft);
+  --bg: var(--mist);
+
+  /* One color per status, also used by the landing page preview. */
+  --status-applied: #2563eb;
+  --status-phone-call: #0891b2;
+  --status-interview: #d97706;
+  --status-final-interview: #7c3aed;
+  --status-offer: #16a34a;
+  --status-rejected: #dc2626;
+  --status-withdrawn: #94a3b8;
+
+  --font-display: inherit;
+  --font-body: inherit;
+
+  --radius-panel: 16px;
+  --radius-control: 10px;
+  --focus: 0 0 0 3px rgba(37, 99, 235, 0.2);
+
   display: flex;
   min-height: 100vh;
+  background: var(--mist);
+  color: var(--ink);
+}
+
+/* Dates and counts line up in columns. */
+.layout .num {
+  font-variant-numeric: tabular-nums;
+}
+
+.layout :focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
 }
 
 .sidebar {
@@ -40,22 +88,38 @@ body {
   height: 100vh;
   padding: 20px 12px;
   background: var(--surface);
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--line);
 }
 
+/* Same logo as the landing page header. */
 .brand {
-  display: block;
-  margin: 0 12px 24px;
-  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 10px 28px;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--ink);
   text-decoration: none;
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-control);
+  background: var(--brand);
+  color: #ffffff;
+  font-size: 0.9rem;
 }
 
 .nav-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -64,27 +128,24 @@ body {
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 10px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   font-weight: 500;
-  color: var(--text);
+  color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
 }
 
 a.nav-item:hover {
-  background: var(--accent-soft);
+  background: var(--brand-soft);
 }
 
-a.nav-item:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.nav-item-active {
-  background: var(--accent-soft);
-  color: var(--accent);
+.nav-item-active,
+a.nav-item-active:hover {
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-weight: 600;
 }
 
 .nav-item-disabled {
@@ -105,22 +166,23 @@ a.nav-item:focus-visible {
 
 .nav-soon {
   margin-left: auto;
-  padding: 0 6px;
+  padding: 0 7px;
+  border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--mist);
   font-size: 0.7rem;
   font-weight: 500;
+  color: var(--muted);
 }
 
 .sidebar-footer {
   margin-top: auto;
-  padding: 16px 12px 0;
-  border-top: 1px solid var(--border);
+  padding: 16px 10px 0;
+  border-top: 1px solid var(--line);
 }
 
 .sidebar-user {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   overflow: hidden;
   font-size: 0.85rem;
   color: var(--muted);
@@ -131,30 +193,25 @@ a.nav-item:focus-visible {
 .sidebar-logout {
   width: 100%;
   min-height: 40px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
   background: var(--surface);
   font: inherit;
   font-weight: 500;
-  color: var(--text);
+  color: var(--ink);
   cursor: pointer;
 }
 
 .sidebar-logout:hover {
-  background: var(--accent-soft);
-}
-
-.sidebar-logout:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  background: var(--brand-soft);
 }
 
 .page {
   flex: 1;
   min-width: 0;
-  max-width: 960px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 48px 40px 64px;
 }
 
 /* Loading and error messages shown while a page fetches its data. */
@@ -165,9 +222,9 @@ a.nav-item:focus-visible {
 }
 
 .page-state-error {
-  border-radius: 6px;
-  background: #fde8e8;
-  color: #b42318;
+  border-radius: var(--radius-control);
+  background: #fef2f2;
+  color: var(--status-rejected);
 }
 
 /* Small screens: sidebar becomes a top bar with a scrollable nav row. */
@@ -180,13 +237,13 @@ a.nav-item:focus-visible {
     position: static;
     flex: none;
     height: auto;
-    padding: 12px 16px;
+    padding: 14px 16px 10px;
     border-right: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--line);
   }
 
   .brand {
-    margin: 0 0 8px;
+    margin: 0 0 10px;
   }
 
   .nav-list {
@@ -198,8 +255,8 @@ a.nav-item:focus-visible {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-top: 8px;
-    padding: 8px 0 0;
+    margin-top: 10px;
+    padding: 10px 0 0;
   }
 
   .sidebar-user {
@@ -213,6 +270,18 @@ a.nav-item:focus-visible {
   }
 
   .page {
-    padding: 24px 16px;
+    width: 100%;
+    margin: 0;
+    padding: 28px 16px 48px;
   }
+}
+
+/* Hidden on screen, still read by screen readers. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
