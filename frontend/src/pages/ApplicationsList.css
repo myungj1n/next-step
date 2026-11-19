@@ -29,11 +29,15 @@
   margin-bottom: 28px;
 }
 
+/* On load the whole bar is revealed left to right in one sweep, so the
+   segments fill in order (Applied, then Phone call, ...) instead of each
+   growing from its own starting point at the same time. */
 .pipeline-bar {
   display: flex;
   gap: 3px;
   height: 14px;
   margin-bottom: 14px;
+  animation: pipeline-sweep 900ms cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
 .pipeline-segment {
@@ -41,8 +45,6 @@
   min-width: 10px;
   border-radius: 3px;
   background: var(--tone);
-  transform-origin: left center;
-  animation: pipeline-grow 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   transition: opacity 0.2s;
 }
 
@@ -62,14 +64,17 @@
   opacity: 0.18;
 }
 
-@keyframes pipeline-grow {
+@keyframes pipeline-sweep {
   from {
-    transform: scaleX(0);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pipeline-segment {
+  .pipeline-bar {
     animation: none;
   }
 }

@@ -124,9 +124,10 @@
 }
 
 /* The large step track: the focal point of the page. */
+/* Same space above (after the Edit application button) as below. */
 .details-track {
-  max-width: 560px;
-  margin-bottom: 40px;
+  max-width: 640px;
+  margin: 20px 0 40px;
 }
 
 /* Facts: a quiet two-column list on the page, no card. */
