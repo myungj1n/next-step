@@ -27,6 +27,7 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
         user_id: userData.user.id,
         company: application.company,
         position: application.position,
+        deadline: application.deadline ?? null,
         status: ApplicationStatus.APPLIED,
       })
       .select(COLUMNS)
@@ -63,8 +64,8 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
     return this.#update(id, { status })
   }
 
-  async updateDetails(id, { company, position }) {
-    return this.#update(id, { company, position })
+  async updateDetails(id, { company, position, deadline }) {
+    return this.#update(id, { company, position, deadline })
   }
 
   // Updates one row and resolves to the updated Application, or null when not found.

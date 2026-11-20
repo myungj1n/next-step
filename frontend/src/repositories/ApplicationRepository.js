@@ -26,7 +26,7 @@ export class ApplicationRepository {
     throw new Error('updateStatus() not implemented')
   }
 
-  // Saves the company's name and position, or null when the application isn't found.
+  // Saves company, position, and deadline; resolves to the updated Application, or null when not found.
   async updateDetails(_id, _details) {
     throw new Error('updateDetails() not implemented')
   }

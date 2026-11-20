@@ -1,29 +1,12 @@
-import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useMyApplications } from '../hooks/useMyApplications.js'
 import ApplicationsList from '../pages/ApplicationsList.jsx'
-import { applicationService } from '../services/index.js'
 
 // Loads the logged-in student's applications and handles list → details navigation.
 function ListRoute() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [applications, setApplications] = useState(null) // null = still loading
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    let ignore = false
-    applicationService
-      .getMyApplications()
-      .then((data) => {
-        if (!ignore) setApplications(data)
-      })
-      .catch((err) => {
-        if (!ignore) setError(err)
-      })
-    return () => {
-      ignore = true
-    }
-  }, [])
+  const { applications, error } = useMyApplications()
 
   if (error) {
     return (

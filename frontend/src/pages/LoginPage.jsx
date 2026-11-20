@@ -30,7 +30,7 @@ const benefits = [
 function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const redirectTo = location.state?.from ?? '/applications'
+  const redirectTo = location.state?.from ?? '/overview'
 
   // The landing page's "Sign up" buttons open this page in signup mode.
   const [mode, setMode] = useState(location.state?.mode ?? 'login') // 'login' | 'signup'
@@ -46,7 +46,7 @@ function LoginPage() {
   // Already logged in: skip the form.
   useEffect(() => {
     getSession().then(({ data }) => {
-      if (data.session) navigate('/applications', { replace: true })
+      if (data.session) navigate('/overview', { replace: true })
     })
   }, [navigate])
 
@@ -67,7 +67,7 @@ function LoginPage() {
     }
     // With "Confirm email" off, Supabase logs the new user in right away.
     if (data.session) {
-      navigate('/applications', { replace: true })
+      navigate('/overview', { replace: true })
     } else {
       setMessage('Account created. Check your email to confirm it, then log in.')
       setMode('login')

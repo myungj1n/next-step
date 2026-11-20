@@ -1,0 +1,879 @@
+/* Overview: a bento grid of cards. Tokens come from .layout in index.css;
+   --tone comes from the tone-* classes in StepTrack.css. */
+
+.ov {
+  container-type: inline-size;
+}
+
+.ov-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    'welcome   welcome   total        response'
+    'cal       cal       interviewing offers'
+    'cal       cal       activity     activity'
+    'breakdown breakdown recent       recent'
+    'actions   actions   followup     followup';
+  /* The calendar spans rows 2–3; its extra height goes to the activity chart (1fr),
+     so the stat tiles beside it stay compact. */
+  grid-template-rows: auto auto 1fr auto auto;
+  gap: 16px;
+}
+
+.ov-welcome { grid-area: welcome; }
+.ov-stat-total { grid-area: total; }
+.ov-response { grid-area: response; }
+.ov-calendar { grid-area: cal; }
+.ov-stat-interviewing { grid-area: interviewing; }
+.ov-stat-offers { grid-area: offers; }
+.ov-activity { grid-area: activity; }
+.ov-breakdown { grid-area: breakdown; }
+.ov-recent { grid-area: recent; }
+.ov-actions { grid-area: actions; }
+.ov-followup { grid-area: followup; }
+
+/* Narrower content: two columns, stats in pairs. */
+@container (max-width: 760px) {
+  .ov-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'welcome      welcome'
+      'total        response'
+      'interviewing offers'
+      'cal          cal'
+      'activity     activity'
+      'breakdown    breakdown'
+      'recent       recent'
+      'actions      actions'
+      'followup     followup';
+    grid-template-rows: none;
+    gap: 12px;
+  }
+}
+
+/* ---------- Card shell ---------- */
+.ov-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+}
+
+.ov-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ov-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.ov-card-sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.ov-empty-line {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.ov-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ov-text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ov-text-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Welcome ---------- */
+.ov-welcome {
+  overflow: hidden;
+  justify-content: center;
+  padding: 26px 28px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 55%, #7c3aed 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 32px -14px rgba(79, 70, 229, 0.6);
+}
+
+.ov-welcome-date {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.ov-welcome-title {
+  position: relative;
+  z-index: 1;
+  margin: 6px 0 6px;
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ov-welcome-text {
+  position: relative;
+  z-index: 1;
+  max-width: 44ch;
+  margin: 0 0 18px;
+  opacity: 0.92;
+}
+
+.ov-welcome-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ov-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.ov-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ov-btn-light {
+  background: #ffffff;
+  color: #3730a3;
+}
+
+.ov-btn-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+}
+
+.ov-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ov-welcome .ov-btn:focus-visible {
+  outline-color: #ffffff;
+}
+
+.ov-welcome-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.ov-welcome-orb-1 {
+  top: -70px;
+  right: -40px;
+  width: 220px;
+  height: 220px;
+}
+
+.ov-welcome-orb-2 {
+  right: 90px;
+  bottom: -90px;
+  width: 160px;
+  height: 160px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ---------- Stat tiles ---------- */
+.ov-stat {
+  --tile-tone: var(--brand);
+  gap: 2px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.ov-stat-total { --tile-tone: var(--status-applied); }
+.ov-response { --tile-tone: var(--status-phone-call); }
+.ov-stat-interviewing { --tile-tone: var(--status-interview); }
+.ov-stat-offers { --tile-tone: var(--status-offer); }
+
+.ov-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tile-tone) 12%, #ffffff);
+  color: var(--tile-tone);
+}
+
+.ov-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ov-stat-unit {
+  margin-left: 2px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ov-stat-label {
+  font-weight: 600;
+}
+
+.ov-stat-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.ov-stat-link {
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.ov-stat-link:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tile-tone) 40%, #ffffff);
+}
+
+/* Response rate ring meter. */
+.ov-ring {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 8px;
+  transform: rotate(-90deg);
+}
+
+.ov-ring circle {
+  fill: none;
+  stroke-width: 7;
+}
+
+.ov-ring-track {
+  stroke: color-mix(in srgb, var(--tile-tone) 14%, #ffffff);
+}
+
+.ov-ring-fill {
+  stroke: var(--tile-tone);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+/* ---------- Calendar ---------- */
+.ov-cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ov-icon-btn,
+.ov-cal-today {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ov-icon-btn {
+  width: 32px;
+}
+
+.ov-icon-btn .ov-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ov-cal-today {
+  padding: 0 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ov-icon-btn:hover,
+.ov-cal-today:hover {
+  background: var(--brand-soft);
+}
+
+.ov-cal-month {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.ov-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.ov-cal-weekday {
+  padding-bottom: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--muted);
+}
+
+.ov-cal-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ov-cal-day:hover {
+  background: var(--mist);
+}
+
+.ov-cal-day.is-past {
+  color: #94a3b8;
+}
+
+.ov-cal-day.has-due {
+  background: var(--brand-soft);
+  font-weight: 700;
+}
+
+.ov-cal-day.is-today {
+  border-color: var(--brand);
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.ov-cal-day.is-selected {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.ov-cal-dots {
+  display: flex;
+  gap: 3px;
+}
+
+/* 2px surface ring keeps neighboring dots distinct. */
+.ov-cal-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 1.5px var(--surface);
+}
+
+.ov-cal-day.is-selected .ov-cal-dot {
+  box-shadow: 0 0 0 1.5px #ffffff;
+}
+
+.ov-cal-list {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.ov-cal-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ov-cal-list-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ov-deadlines {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ov-deadline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ov-deadline:hover {
+  background: var(--mist);
+}
+
+.ov-date-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: var(--brand-soft);
+  line-height: 1.1;
+}
+
+.ov-date-chip-month {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.ov-date-chip-day {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.ov-date-chip.is-soon {
+  background: #fef3c7;
+}
+
+.ov-date-chip.is-soon .ov-date-chip-month {
+  color: #b45309;
+}
+
+.ov-deadline-text,
+.ov-recent-text,
+.ov-followup-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.ov-deadline-company,
+.ov-recent-company {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ov-deadline-position,
+.ov-recent-position {
+  overflow: hidden;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ov-deadline-when {
+  flex: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------- Weekly activity (column chart) ---------- */
+.ov-activity-total {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ov-activity-total .num {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.ov-columns {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  gap: 6px;
+  min-height: 150px;
+}
+
+.ov-column {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: 8px;
+  outline-offset: 2px;
+}
+
+.ov-column-plot {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Columns: capped at 24px, rounded at the data end, square at the baseline. */
+.ov-column-bar {
+  width: min(24px, 70%);
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--brand) 30%, #ffffff);
+  transition: background 0.15s, height 0.4s ease;
+}
+
+.ov-column.is-current .ov-column-bar,
+.ov-column.is-hovered .ov-column-bar {
+  background: var(--brand);
+}
+
+.ov-column-value {
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.ov-column-label {
+  height: 1.4em;
+  margin-top: 6px;
+  overflow: hidden;
+  font-size: 0.7rem;
+  text-align: center;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ov-tooltip {
+  position: absolute;
+  bottom: calc(100% - 12px);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  font-size: 0.78rem;
+  color: #ffffff;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ov-tooltip span {
+  opacity: 0.75;
+}
+
+/* ---------- Status breakdown (horizontal bars) ---------- */
+.ov-bars {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ov-bar-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.ov-bar-row:hover {
+  background: var(--mist);
+}
+
+.ov-bar-name {
+  overflow: hidden;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ov-bar-track {
+  height: 10px;
+  border-radius: 0 4px 4px 0;
+  background: #f1f5f9;
+}
+
+/* Square at the baseline (left), 4px round at the data end. */
+.ov-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  background: var(--tone);
+  transition: width 0.5s ease;
+}
+
+.ov-bar-count {
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* ---------- Recent applications ---------- */
+.ov-recent-list,
+.ov-followup-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ov-recent-row,
+.ov-followup-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ov-recent-row:hover,
+.ov-followup-row:hover {
+  background: var(--mist);
+}
+
+.ov-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--tone) 14%, #ffffff);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.ov-recent-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex: none;
+  width: 116px;
+}
+
+.ov-recent-progress .step-track {
+  width: 100%;
+}
+
+.ov-recent-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ---------- Quick actions ---------- */
+.ov-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ov-action {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: var(--mist);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.ov-action:hover {
+  border-color: color-mix(in srgb, var(--brand) 35%, #ffffff);
+  background: var(--brand-soft);
+  transform: translateY(-2px);
+}
+
+.ov-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--brand);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.ov-action-title {
+  font-weight: 600;
+}
+
+.ov-action-text {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------- Follow-ups ---------- */
+.ov-followup-age {
+  flex: none;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #fef3c7;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #92400e;
+  white-space: nowrap;
+}
+
+.ov-caught-up {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 14px;
+}
+
+.ov-caught-up-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: var(--status-offer);
+}
+
+.ov-caught-up p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.ov-caught-up strong {
+  display: block;
+  color: var(--ink);
+}
+
+@container (max-width: 420px) {
+  .ov-card {
+    padding: 18px;
+  }
+
+  /* Recent rows: progress drops below the name instead of squeezing beside it. */
+  .ov-recent-row {
+    flex-wrap: wrap;
+  }
+
+  .ov-recent-progress {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding-left: 48px;
+  }
+
+  .ov-recent-progress .step-track {
+    width: 96px;
+  }
+
+  .ov-bar-row {
+    grid-template-columns: 6rem minmax(0, 1fr) 1.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ov *,
+  .ov *::before {
+    transition: none !important;
+  }
+}

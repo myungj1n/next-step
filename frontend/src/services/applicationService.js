@@ -4,6 +4,22 @@ import { ApplicationStatus } from '../models/Application.js'
 
 export const MAX_NOTES_LENGTH = 2000
 
+// Deadlines are optional calendar days ("2026-12-01"). Blank means no deadline.
+// Returns { deadline } or { error }.
+function parseDeadline(value) {
+  const trimmed = (value ?? '').trim()
+  if (!trimmed) return { deadline: null }
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed)
+  if (match) {
+    const [year, month, day] = match.slice(1).map(Number)
+    const date = new Date(year, month - 1, day)
+    if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
+      return { deadline: trimmed }
+    }
+  }
+  return { error: 'Enter the deadline as a valid date, or leave it blank.' }
+}
+
 export const DetailsOutcome = Object.freeze({
   FOUND: 'FOUND',
   NOT_FOUND: 'NOT_FOUND',
@@ -18,7 +34,7 @@ export class ApplicationService {
   }
 
   // Creates an application for the logged-in student with the initial Applied status.
-  async addApplication({ company, position }) {
+  async addApplication({ company, position, deadline }) {
     const trimmedCompany = company?.trim()
     const trimmedPosition = position?.trim()
 
@@ -30,10 +46,14 @@ export class ApplicationService {
       }
     }
 
+    const parsed = parseDeadline(deadline)
+    if (parsed.error) return { success: false, application: null, error: parsed.error }
+
     try {
       const application = await this.#repository.create({
         company: trimmedCompany,
         position: trimmedPosition,
+        deadline: parsed.deadline,
       })
       return { success: true, application, error: null }
     } catch (error) {
@@ -109,8 +129,9 @@ export class ApplicationService {
     }
   }
 
-  // Business rule: company and position are required and trimmed. Same result shape as above.
-  async updateApplicationDetails(id, { company, position }) {
+  // Business rule: company and position are required and trimmed; the deadline is optional.
+  // Same result shape as above.
+  async updateApplicationDetails(id, { company, position, deadline }) {
     const trimmedCompany = company?.trim()
     const trimmedPosition = position?.trim()
 
@@ -122,8 +143,16 @@ export class ApplicationService {
       }
     }
 
+    const parsed = parseDeadline(deadline)
+    if (parsed.error) return { success: false, application: null, error: parsed.error }
+
     return this.#saveUpdate(
-      () => this.#repository.updateDetails(id, { company: trimmedCompany, position: trimmedPosition }),
+      () =>
+        this.#repository.updateDetails(id, {
+          company: trimmedCompany,
+          position: trimmedPosition,
+          deadline: parsed.deadline,
+        }),
       'application details',
     )
   }

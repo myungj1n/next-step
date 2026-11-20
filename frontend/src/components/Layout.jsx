@@ -1,19 +1,20 @@
 import { Link, Outlet, useLocation, useOutletContext } from 'react-router-dom'
 import { signOut } from '../services/authService.js'
 
-// Sidebar items. Applications and Add application are built; the rest are mock
+// Sidebar items. Overview and Applications are built; the rest are mock
 // placeholders for upcoming features (set `to` once their route exists).
+// Adding an application lives on the Applications page, not in the sidebar.
 const navItems = [
+  { label: 'Overview', to: '/overview', icon: 'grid' },
   { label: 'Applications', to: '/applications', icon: 'list' },
-  { label: 'Add application', to: '/applications/add', icon: 'plus' },
   { label: 'Progress summary', icon: 'chart' },
   { label: 'Reminders', icon: 'bell' },
   { label: 'AI Advisor', icon: 'sparkle' },
 ]
 
 const iconPaths = {
+  grid: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z',
   list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
-  plus: 'M12 5v14M5 12h14',
   chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
   bell: 'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0',
   sparkle: 'M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 17l.8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8z',
@@ -42,16 +43,13 @@ function Layout() {
   const { pathname } = useLocation()
   const { user } = useOutletContext()
 
-  // Applications is active on the list and detail pages; Add Application is active only on its own page.
-  const isActive = (item) =>
-    item.to === '/applications'
-      ? pathname === '/applications' || (pathname.startsWith('/applications/') && pathname !== '/applications/add')
-      : pathname === item.to
+  // Applications stays active on its details and add pages.
+  const isActive = (item) => pathname === item.to || pathname.startsWith(`${item.to}/`)
 
   return (
     <div className="layout">
       <aside className="sidebar">
-        <Link to="/applications" className="brand">
+        <Link to="/overview" className="brand">
           <BrandMark />
           Next Step
         </Link>
@@ -89,7 +87,7 @@ function Layout() {
         </div>
       </aside>
       <main className="page">
-        <Outlet />
+        <Outlet context={{ user }} />
       </main>
     </div>
   )
