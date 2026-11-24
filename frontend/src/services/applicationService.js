@@ -215,4 +215,16 @@ export class ApplicationService {
       'application details',
     )
   }
+
+  // Deletes an application for good. Resolves to { success, error }.
+  async deleteApplication(id) {
+    try {
+      const deleted = await this.#repository.delete(id)
+      return deleted
+        ? { success: true, error: null }
+        : { success: false, error: 'This application could not be found, so nothing was deleted.' }
+    } catch (error) {
+      return { success: false, error: `The application could not be deleted. ${error.message}` }
+    }
+  }
 }

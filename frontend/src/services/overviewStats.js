@@ -1,11 +1,10 @@
 // Application layer: numbers and groupings for the Overview page.
 // Pure functions (no React, no database), like applicationQuery.js.
-import { ApplicationStatus, STATUS_STAGES } from '../models/Application.js'
+import { ApplicationStatus, CLOSED_STATUSES, REPLIED_STATUSES, STATUS_STAGES } from '../models/Application.js'
 import { isWaiting } from './applicationQuery.js'
 
 const DAY_MS = 86_400_000
 
-const CLOSED = new Set([ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN])
 const INTERVIEWING = new Set([
   ApplicationStatus.PHONE_CALL,
   ApplicationStatus.INTERVIEW,
@@ -42,11 +41,10 @@ export function summarize(applications, now = new Date()) {
 
   for (const application of applications) {
     const { status, createdAt } = application
-    if (!CLOSED.has(status) && status !== ApplicationStatus.OFFER) active += 1
+    if (!CLOSED_STATUSES.has(status) && status !== ApplicationStatus.OFFER) active += 1
     if (INTERVIEWING.has(status)) interviewing += 1
     if (status === ApplicationStatus.OFFER) offers += 1
-    // Anything past "Applied" (including a rejection) means the company replied.
-    if (status !== ApplicationStatus.APPLIED && status !== ApplicationStatus.WITHDRAWN) heardBack += 1
+    if (REPLIED_STATUSES.has(status)) heardBack += 1
     if (createdAt && new Date(createdAt).getTime() >= weekAgo) addedThisWeek += 1
   }
 
@@ -88,7 +86,7 @@ export function deadlinesByDay(applications) {
 export function upcomingDeadlines(applications, now = new Date(), limit = 5) {
   const today = toDateKey(now)
   return applications
-    .filter((application) => application.deadline && application.deadline >= today && !CLOSED.has(application.status))
+    .filter((application) => application.deadline && application.deadline >= today && !CLOSED_STATUSES.has(application.status))
     .sort((a, b) => a.deadline.localeCompare(b.deadline) || a.company.localeCompare(b.company))
     .slice(0, limit)
 }

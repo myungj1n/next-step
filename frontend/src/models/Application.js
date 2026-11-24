@@ -20,6 +20,21 @@ export const STATUS_STAGES = Object.freeze([
   ApplicationStatus.OFFER,
 ])
 
+// Applications that left the path without an offer.
+export const CLOSED_STATUSES = Object.freeze(new Set([ApplicationStatus.REJECTED, ApplicationStatus.WITHDRAWN]))
+
+// The company replied: anything past Applied, including a rejection. Withdrawn doesn't
+// count, since that was the student's choice. Overview's response rate uses this too.
+export const REPLIED_STATUSES = Object.freeze(
+  new Set([
+    ApplicationStatus.PHONE_CALL,
+    ApplicationStatus.INTERVIEW,
+    ApplicationStatus.FINAL_INTERVIEW,
+    ApplicationStatus.OFFER,
+    ApplicationStatus.REJECTED,
+  ]),
+)
+
 // Other spellings that mean the same status, including values saved before the
 // five-step path existed ("Interviewing").
 const STATUS_ALIASES = {
@@ -69,5 +84,16 @@ export class Application {
   getSafeJobLink() {
     if (!this.jobLink) return null
     return /^https?:\/\//i.test(this.jobLink) ? this.jobLink : `https://${this.jobLink}`
+  }
+
+  // "https://www.stripe.com/jobs/123" -> "stripe.com", for labels. null when there's no link.
+  getJobLinkHost() {
+    const link = this.getSafeJobLink()
+    if (!link) return null
+    try {
+      return new URL(link).host.replace(/^www\./, '')
+    } catch {
+      return this.jobLink
+    }
   }
 }

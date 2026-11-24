@@ -1,0 +1,605 @@
+/* Progress page. Tokens come from .layout in index.css; --tone comes from the
+   tone-* classes in StepTrack.css. The headline is the finding; the stage
+   columns are the one bold chart; everything else stays quiet. */
+
+.pg {
+  container-type: inline-size;
+  max-width: 1000px;
+}
+
+/* ---------- Header ---------- */
+
+.pg-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 24px;
+}
+
+.pg-header-text {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.pg-kicker {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.pg-headline {
+  max-width: 22ch;
+  margin: 0;
+  font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.pg-detail {
+  max-width: 60ch;
+  margin: 12px 0 0;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.pg-title {
+  margin: 0 0 20px;
+  font-size: clamp(2rem, 1.5rem + 1.6vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.pg-range {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+}
+
+.pg-range button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.pg-range button:hover {
+  color: var(--ink);
+}
+
+.pg-range button.is-active {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+/* ---------- Layout ---------- */
+
+.pg-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pg-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+@container (max-width: 720px) {
+  .pg-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.pg-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px 26px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.pg-card-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.pg-card-sub {
+  margin: 4px 0 20px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.pg-note {
+  margin: auto 0 0;
+  padding-top: 16px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pg-empty-line {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------- Stage columns: the page's one bold chart ---------- */
+
+.pg-flow-columns {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-flow-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pg-flow-count {
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Count and bar stack from the bottom, so each count sits on its own bar.
+   The bar's % height is of the area under the count (flex-basis keeps it so). */
+.pg-flow-bar-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 240px;
+  margin: 0 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pg-flow-bar {
+  flex: none;
+  width: 100%;
+  border-radius: 10px 10px 4px 4px;
+  background: var(--tone);
+  transform-origin: bottom center;
+  animation: pg-rise 650ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.pg-flow-column:nth-child(2) .pg-flow-bar { animation-delay: 60ms; }
+.pg-flow-column:nth-child(3) .pg-flow-bar { animation-delay: 120ms; }
+.pg-flow-column:nth-child(4) .pg-flow-bar { animation-delay: 180ms; }
+.pg-flow-column:nth-child(5) .pg-flow-bar { animation-delay: 240ms; }
+
+@keyframes pg-rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-flow-bar {
+    animation: none;
+  }
+}
+
+.pg-flow-name {
+  font-weight: 600;
+}
+
+.pg-flow-caption {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pg-flow-badge {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--brand-hover);
+  white-space: nowrap;
+}
+
+.pg-flow-badge.is-drop {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+@container (max-width: 560px) {
+  .pg-flow-columns {
+    gap: 8px;
+  }
+
+  .pg-flow-count {
+    font-size: 1.5rem;
+  }
+
+  .pg-flow-bar-area {
+    height: 170px;
+  }
+
+  .pg-flow-name {
+    font-size: 0.8rem;
+  }
+
+  .pg-flow-caption {
+    display: none;
+  }
+
+  /* Just the percentage on narrow screens; the card's subtitle explains it. */
+  .pg-flow-badge {
+    padding: 2px 8px;
+    font-size: 0.75rem;
+  }
+
+  .pg-flow-badge-word {
+    display: none;
+  }
+}
+
+/* ---------- Resume versions ---------- */
+
+.pg-resumes {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-resumes li + li {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.pg-resume-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 8px;
+}
+
+.pg-resume-name {
+  font-weight: 700;
+}
+
+.pg-resumes li.is-best .pg-resume-name {
+  color: var(--brand);
+}
+
+.pg-best {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.pg-resume-count {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pg-meters {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 8px 10px;
+  font-size: 0.85rem;
+}
+
+.pg-meter-label {
+  color: var(--muted);
+}
+
+.pg-meter {
+  height: 8px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.pg-meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--brand);
+}
+
+.pg-meter-fill.is-light {
+  background: #93c5fd;
+}
+
+.pg-meter-value {
+  font-weight: 700;
+  text-align: right;
+}
+
+/* ---------- Outcomes ---------- */
+
+.pg-tone-offer { --part: var(--status-offer); }
+.pg-tone-interview { --part: var(--status-interview); }
+.pg-tone-applied { --part: var(--status-applied); }
+.pg-tone-no-reply { --part: #93c5fd; }
+.pg-tone-rejected { --part: var(--status-rejected); }
+.pg-tone-withdrawn { --part: var(--status-withdrawn); }
+
+.pg-split {
+  display: flex;
+  gap: 3px;
+  height: 14px;
+  margin-bottom: 16px;
+}
+
+.pg-split-part {
+  flex-basis: 0;
+  min-width: 6px;
+  border-radius: 3px;
+  background: var(--part);
+}
+
+.pg-split-part:first-child { border-radius: 7px 3px 3px 7px; }
+.pg-split-part:last-child { border-radius: 3px 7px 7px 3px; }
+.pg-split-part:only-child { border-radius: 7px; }
+
+.pg-legend {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-legend-row {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) 30px 40px;
+  align-items: center;
+  gap: 10px;
+  margin: 0 -8px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.pg-legend-row:hover {
+  background: var(--mist);
+}
+
+.pg-legend li.is-zero .pg-legend-row {
+  color: var(--muted);
+}
+
+.pg-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--part);
+}
+
+.pg-legend li.is-zero .pg-swatch {
+  opacity: 0.35;
+}
+
+.pg-legend-count {
+  font-weight: 700;
+  text-align: right;
+}
+
+.pg-legend-pct {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ---------- Waiting, pace, timing: one panel, three columns ---------- */
+
+.pg-rhythm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+}
+
+.pg-rhythm-part {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px 26px;
+}
+
+.pg-rhythm-part + .pg-rhythm-part {
+  border-left: 1px solid var(--line);
+}
+
+@container (max-width: 820px) {
+  .pg-rhythm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pg-rhythm-part + .pg-rhythm-part {
+    border-top: 1px solid var(--line);
+    border-left: none;
+  }
+}
+
+.pg-part-title {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.pg-figure {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.pg-figure-label {
+  margin: 4px 0 16px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pg-bars {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-bars li {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.pg-bars li.is-late .pg-meter-fill {
+  background: var(--status-interview);
+}
+
+.pg-callout {
+  margin: 14px 0 0;
+  font-size: 0.85rem;
+}
+
+.pg-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.pg-columns {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 92px;
+}
+
+.pg-column {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  height: 100%;
+  border-radius: 4px;
+  background: #f1f5f9;
+}
+
+.pg-column-fill {
+  width: 100%;
+  border-radius: 4px;
+  background: #bfdbfe;
+}
+
+.pg-column.is-current .pg-column-fill {
+  background: var(--brand);
+}
+
+.pg-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.pg-ages {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.pg-ages li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.pg-ages-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+
+.pg-ages-value {
+  font-weight: 600;
+}
+
+/* ---------- Empty states ---------- */
+
+.pg-empty {
+  align-items: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.pg-empty-title {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.pg-empty-text {
+  max-width: 48ch;
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.pg-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 20px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-control);
+  background: var(--brand);
+  font: inherit;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pg-button:hover {
+  background: var(--brand-hover);
+}

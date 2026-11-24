@@ -30,4 +30,10 @@ export class ApplicationRepository {
   async updateDetails(_id, _details) {
     throw new Error('updateDetails() not implemented')
   }
+
+  // Deletes one application. Resolves to true if it was deleted, false if the student
+  // has no application with this id.
+  async delete(_id) {
+    throw new Error('delete() not implemented')
+  }
 }

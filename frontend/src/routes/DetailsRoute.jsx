@@ -74,6 +74,16 @@ function DetailsRoute() {
   const updateDetails = async (details) =>
     applyUpdate(await applicationService.updateApplicationDetails(id, details))
 
+  // Back to the list (keeping its search/filter/sort), which confirms the delete.
+  const deleteApplication = async () => {
+    const company = result.application.company
+    const outcome = await applicationService.deleteApplication(id)
+    if (outcome.success) {
+      navigate(`/applications${location.state?.listSearch ?? ''}`, { state: { deleted: { company } } })
+    }
+    return outcome
+  }
+
   return (
     <ApplicationDetails
       key={result.application.id}
@@ -84,6 +94,7 @@ function DetailsRoute() {
       onSaveNotes={saveNotes}
       onUpdateStatus={updateStatus}
       onUpdateDetails={updateDetails}
+      onDelete={deleteApplication}
     />
   )
 }

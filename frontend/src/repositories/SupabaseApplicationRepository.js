@@ -77,6 +77,15 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
     })
   }
 
+  // Asks for the deleted row back: when Row Level Security blocks a delete (another
+  // student's id, or no DELETE policy), Supabase returns no error and no rows.
+  async delete(id) {
+    const { data, error } = await this.#client.from('applications').delete().eq('id', id).select('id')
+    if (error?.code === INVALID_UUID) return false
+    if (error) throw new Error(error.message)
+    return data.length > 0
+  }
+
   // Updates one row and resolves to the updated Application, or null when not found.
   async #update(id, changes) {
     const { data, error } = await this.#client
