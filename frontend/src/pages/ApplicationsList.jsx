@@ -19,10 +19,11 @@ const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`
 
 // UI layer: the route passes in the applications, what happens on select, and how to
 // change a status from a row (onUpdateStatus resolves to { success, error }).
-// justAdded ({ id, company }) is the application the student just created, if any.
+// justAdded ({ id, company }) / justDeleted ({ company }) confirm what the student just did;
+// onDismissAdded clears either one.
 // Search, status, and sort live in the URL (?q=&status=&sort=) so they survive
 // going into an application and coming back.
-function ApplicationsList({ applications, onSelect, onUpdateStatus, justAdded, onDismissAdded }) {
+function ApplicationsList({ applications, onSelect, onUpdateStatus, justAdded, justDeleted, onDismissAdded }) {
   const [savingId, setSavingId] = useState(null)
   const [rowError, setRowError] = useState(null)
 
@@ -83,6 +84,24 @@ function ApplicationsList({ applications, onSelect, onUpdateStatus, justAdded, o
     }
   }
 
+  // "Added …" or "Deleted …", shown once after coming back to the list.
+  const notice = (justAdded || justDeleted) && (
+    <div className="apps-added" role="status">
+      <CheckIcon />
+      <span>
+        {justAdded ? 'Added' : 'Deleted'} <strong>{(justAdded ?? justDeleted).company}</strong>.
+      </span>
+      {justAdded && (
+        <Link to="/applications/add" className="apps-added-link">
+          Add another
+        </Link>
+      )}
+      <button type="button" className="apps-added-close" onClick={onDismissAdded} aria-label="Dismiss">
+        ×
+      </button>
+    </div>
+  )
+
   if (applications.length === 0) {
     return (
       <section className="apps">
@@ -92,6 +111,7 @@ function ApplicationsList({ applications, onSelect, onUpdateStatus, justAdded, o
             <span aria-hidden="true">+</span> Add application
           </Link>
         </div>
+        {notice}
         <div className="apps-panel apps-empty">
           <p className="apps-empty-title">Nothing tracked yet</p>
           <p className="apps-empty-text">
@@ -160,20 +180,7 @@ function ApplicationsList({ applications, onSelect, onUpdateStatus, justAdded, o
         </ul>
       </div>
 
-      {justAdded && (
-        <div className="apps-added" role="status">
-          <CheckIcon />
-          <span>
-            Added <strong>{justAdded.company}</strong>.
-          </span>
-          <Link to="/applications/add" className="apps-added-link">
-            Add another
-          </Link>
-          <button type="button" className="apps-added-close" onClick={onDismissAdded} aria-label="Dismiss">
-            ×
-          </button>
-        </div>
-      )}
+      {notice}
 
       {rowError && (
         <p className="apps-row-error" role="alert">

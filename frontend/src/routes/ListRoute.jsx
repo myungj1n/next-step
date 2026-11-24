@@ -6,7 +6,8 @@ import { applicationService } from '../services/index.js'
 
 // Loads the logged-in student's applications, handles list → details navigation, and
 // saves status changes made from a row. After adding an application, the add page sends
-// { added: { id, company } } in the location state so the list can confirm it.
+// { added: { id, company } } in the location state so the list can confirm it; the details
+// page sends { deleted: { company } } after a delete.
 function ListRoute() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -18,6 +19,7 @@ function ListRoute() {
     [loaded, updated],
   )
   const justAdded = location.state?.added ?? null
+  const justDeleted = location.state?.deleted ?? null
 
   const updateStatus = async (id, status) => {
     const result = await applicationService.updateApplicationStatus(id, status)
@@ -44,6 +46,7 @@ function ListRoute() {
     <ApplicationsList
       applications={applications}
       justAdded={justAdded}
+      justDeleted={justDeleted}
       onDismissAdded={dismissAdded}
       onUpdateStatus={updateStatus}
       onSelect={(id) =>

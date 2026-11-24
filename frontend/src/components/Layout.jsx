@@ -1,13 +1,13 @@
 import { Link, Outlet, useLocation, useOutletContext } from 'react-router-dom'
 import { signOut } from '../services/authService.js'
 
-// Sidebar items. Overview and Applications are built; the rest are mock
+// Sidebar items. Overview, Applications, and Progress are built; the rest are mock
 // placeholders for upcoming features (set `to` once their route exists).
 // Adding an application lives on the Applications page, not in the sidebar.
 const navItems = [
   { label: 'Overview', to: '/overview', icon: 'grid' },
   { label: 'Applications', to: '/applications', icon: 'list' },
-  { label: 'Progress summary', icon: 'chart' },
+  { label: 'Progress', to: '/progress', icon: 'chart' },
   { label: 'Reminders', icon: 'bell' },
   { label: 'AI Advisor', icon: 'sparkle' },
 ]

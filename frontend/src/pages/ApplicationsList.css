@@ -344,6 +344,14 @@
   color: var(--status-offer);
 }
 
+.apps-added-close {
+  margin-left: auto;
+}
+
+.apps-added-link + .apps-added-close {
+  margin-left: 0;
+}
+
 .apps-added-link {
   margin-left: auto;
   font-weight: 600;
