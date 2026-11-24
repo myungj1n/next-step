@@ -1,0 +1,242 @@
+/* Form controls shared by the add and edit forms: fields, the resume version picker,
+   and the clickable stage track. Tokens come from .layout in index.css. */
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.field-optional {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background-color: var(--surface);
+  font: inherit;
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input,
+.field select {
+  height: 44px;
+  padding-left: 14px;
+}
+
+.field input {
+  padding-right: 14px;
+}
+
+.field textarea {
+  min-height: 110px;
+  padding: 12px 14px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* An empty date input shows "mm/dd/yyyy": make it read as a placeholder. */
+.field input.is-empty {
+  color: #94a3b8;
+}
+
+.field input:hover,
+.field select:hover:not(:disabled),
+.field textarea:hover {
+  border-color: #94a3b8;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: var(--focus);
+}
+
+.field select:disabled {
+  color: var(--muted);
+  cursor: wait;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.input-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+}
+
+.input-icon svg {
+  position: absolute;
+  left: 14px;
+  pointer-events: none;
+}
+
+.field .input-icon input {
+  padding-left: 40px;
+}
+
+/* The new-version name opens right under the dropdown. */
+.field-reveal {
+  animation: field-reveal 180ms ease-out;
+}
+
+@keyframes field-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ---- Stage picker: the step track as radio buttons ---- */
+
+.stage-picker {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* The idle line runs from the first dot's center (10%) to the last (90%);
+   the filled line runs to the chosen stage. */
+.stage-picker::before,
+.stage-picker::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10%;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.stage-picker::before {
+  right: 10%;
+  background: var(--line);
+}
+
+.stage-picker::after {
+  width: calc(80% * var(--progress, 0));
+  background: var(--tone);
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.stage-option {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.stage-picker.is-busy .stage-option {
+  cursor: wait;
+}
+
+.stage-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.stage-dot {
+  width: 23px;
+  height: 23px;
+  border: 3px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.stage-option:hover .stage-dot {
+  border-color: var(--tone);
+}
+
+.stage-option.is-reached .stage-dot {
+  border-color: var(--tone);
+  background: var(--tone);
+}
+
+.stage-option.is-selected .stage-dot {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--tone) 18%, transparent);
+}
+
+.stage-option input:focus-visible + .stage-dot {
+  outline: 2px solid var(--brand);
+  outline-offset: 4px;
+}
+
+.stage-name {
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--muted);
+}
+
+.stage-option.is-reached .stage-name {
+  color: var(--ink);
+}
+
+.stage-option.is-selected .stage-name {
+  font-weight: 700;
+  color: var(--tone);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-picker::after,
+  .stage-dot,
+  .field-reveal {
+    transition: none;
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .stage-name {
+    font-size: 0.78rem;
+  }
+}

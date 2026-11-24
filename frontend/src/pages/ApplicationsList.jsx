@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import StepTrack from '../components/StepTrack.jsx'
 import { ApplicationStatus, statusSlug } from '../models/Application.js'
@@ -17,10 +17,24 @@ import './ApplicationsList.css'
 
 const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`
 
-// UI layer: the route passes in the applications and what happens on select.
+// UI layer: the route passes in the applications, what happens on select, and how to
+// change a status from a row (onUpdateStatus resolves to { success, error }).
+// justAdded ({ id, company }) is the application the student just created, if any.
 // Search, status, and sort live in the URL (?q=&status=&sort=) so they survive
 // going into an application and coming back.
-function ApplicationsList({ applications, onSelect }) {
+function ApplicationsList({ applications, onSelect, onUpdateStatus, justAdded, onDismissAdded }) {
+  const [savingId, setSavingId] = useState(null)
+  const [rowError, setRowError] = useState(null)
+
+  const changeStatus = async (app, next) => {
+    if (next === app.status) return
+    setSavingId(app.id)
+    setRowError(null)
+    const result = await onUpdateStatus(app.id, next)
+    setSavingId(null)
+    if (!result.success) setRowError(`Couldn't move ${app.company} to ${next}. ${result.error}`)
+  }
+
   const [params, setParams] = useSearchParams()
   const search = params.get('q') ?? ''
   const status = params.get('status') ?? ALL_STATUSES
@@ -146,6 +160,27 @@ function ApplicationsList({ applications, onSelect }) {
         </ul>
       </div>
 
+      {justAdded && (
+        <div className="apps-added" role="status">
+          <CheckIcon />
+          <span>
+            Added <strong>{justAdded.company}</strong>.
+          </span>
+          <Link to="/applications/add" className="apps-added-link">
+            Add another
+          </Link>
+          <button type="button" className="apps-added-close" onClick={onDismissAdded} aria-label="Dismiss">
+            ×
+          </button>
+        </div>
+      )}
+
+      {rowError && (
+        <p className="apps-row-error" role="alert">
+          {rowError}
+        </p>
+      )}
+
       <div className="apps-toolbar">
         <label className="apps-search">
           <SearchIcon />
@@ -219,7 +254,7 @@ function ApplicationsList({ applications, onSelect }) {
               {visible.map((app) => (
                 <tr
                   key={app.id}
-                  className="apps-row"
+                  className={`apps-row${justAdded?.id === app.id ? ' is-new' : ''}`}
                   tabIndex={0}
                   onClick={() => onSelect(app.id)}
                   onKeyDown={(event) => handleKeyDown(event, app.id)}
@@ -228,13 +263,32 @@ function ApplicationsList({ applications, onSelect }) {
                     <span className="apps-company">{app.company}</span>
                     <span className="apps-position">{app.position}</span>
                   </td>
-                  <td className="apps-cell-progress">
-                    <span className="apps-progress">
+                  {/* Changing the status here shouldn't open the application. */}
+                  <td
+                    className="apps-cell-progress"
+                    onClick={(event) => event.stopPropagation()}
+                    onKeyDown={(event) => event.stopPropagation()}
+                  >
+                    <label className={`apps-progress${savingId === app.id ? ' is-saving' : ''}`}>
+                      <span className="visually-hidden">Status for {app.company}</span>
                       <StepTrack status={app.status} />
                       <span className={`apps-status tone-${statusSlug(app.status)}`}>
-                        {app.status}
+                        {savingId === app.id ? 'Saving…' : app.status}
                       </span>
-                    </span>
+                      <ChevronIcon />
+                      <select
+                        className="apps-progress-select"
+                        value={app.status}
+                        disabled={savingId === app.id}
+                        onChange={(event) => changeStatus(app, event.target.value)}
+                      >
+                        {Object.values(ApplicationStatus).map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   </td>
                   <td className="apps-date num">
                     {app.createdAt ? (
@@ -265,6 +319,24 @@ function SearchIcon() {
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
+    </svg>
+  )
+}
+
+function ChevronIcon() {
+  return (
+    <svg className="apps-progress-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg className="apps-added-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5" />
     </svg>
   )
 }

@@ -73,3 +73,35 @@ export function queryApplications(applications, { search = '', status = ALL_STAT
     )
     .sort(compare)
 }
+
+// The student's resume versions, most recently used first, with how many applications
+// used each: [{ name: 'Resume v3', count: 4 }, ...]. Names match ignoring case and spacing.
+export function resumeVersionsFrom(applications) {
+  const byKey = new Map()
+  for (const application of applications ?? []) {
+    const name = application.resumeVersion?.trim()
+    if (!name) continue
+    const key = name.toLowerCase().replace(/\s+/g, ' ')
+    const used = time(application.createdAt)
+    const entry = byKey.get(key)
+    if (!entry) byKey.set(key, { name, count: 1, lastUsed: used })
+    else {
+      entry.count += 1
+      if (used > entry.lastUsed) Object.assign(entry, { name, lastUsed: used })
+    }
+  }
+  return [...byKey.values()]
+    .sort((a, b) => b.lastUsed - a.lastUsed || a.name.localeCompare(b.name))
+    .map(({ name, count }) => ({ name, count }))
+}
+
+// A guess at the next version's name: "Resume v3" -> "Resume v4", "CV 2025.2" -> "CV 2025.3".
+// Falls back to "Resume v1" when there's nothing to count up from.
+export function suggestNextResumeVersion(versions) {
+  const latest = versions?.[0]?.name
+  if (!latest) return 'Resume v1'
+  const match = /^(.*?)(\d+)(\D*)$/.exec(latest)
+  if (!match) return `${latest} v2`
+  const [, before, number, after] = match
+  return `${before}${Number(number) + 1}${after}`
+}

@@ -20,6 +20,20 @@ function parseDeadline(value) {
   return { error: 'Enter the deadline as a valid date, or leave it blank.' }
 }
 
+export const MAX_RESUME_VERSION_LENGTH = 80
+
+// Job links are optional. Students often paste them without "https://", so accept any
+// web-address-looking text; Application.getSafeJobLink() adds the scheme when opening.
+// Returns { jobLink } or { error }.
+function parseJobLink(value) {
+  const trimmed = (value ?? '').trim()
+  if (!trimmed) return { jobLink: null }
+  if (/\s/.test(trimmed) || !/[a-z0-9-]\.[a-z]{2,}/i.test(trimmed)) {
+    return { error: 'Enter the job link as a web address, like careers.google.com/jobs/123, or leave it blank.' }
+  }
+  return { jobLink: trimmed }
+}
+
 export const DetailsOutcome = Object.freeze({
   FOUND: 'FOUND',
   NOT_FOUND: 'NOT_FOUND',
@@ -33,8 +47,9 @@ export class ApplicationService {
     this.#repository = repository
   }
 
-  // Creates an application for the logged-in student with the initial Applied status.
-  async addApplication({ company, position, deadline }) {
+  // Creates an application for the logged-in student. Company and position are required;
+  // status defaults to Applied; deadline, job link, resume version, and notes are optional.
+  async addApplication({ company, position, deadline, status, jobLink, resumeVersion, notes }) {
     const trimmedCompany = company?.trim()
     const trimmedPosition = position?.trim()
 
@@ -49,11 +64,41 @@ export class ApplicationService {
     const parsed = parseDeadline(deadline)
     if (parsed.error) return { success: false, application: null, error: parsed.error }
 
+    const startStatus = status || ApplicationStatus.APPLIED
+    if (!Object.values(ApplicationStatus).includes(startStatus)) {
+      return { success: false, application: null, error: 'Choose a valid application status.' }
+    }
+
+    const link = parseJobLink(jobLink)
+    if (link.error) return { success: false, application: null, error: link.error }
+
+    const trimmedResume = (resumeVersion ?? '').trim()
+    if (trimmedResume.length > MAX_RESUME_VERSION_LENGTH) {
+      return {
+        success: false,
+        application: null,
+        error: `Keep the resume version under ${MAX_RESUME_VERSION_LENGTH} characters.`,
+      }
+    }
+
+    const trimmedNotes = (notes ?? '').trim()
+    if (trimmedNotes.length > MAX_NOTES_LENGTH) {
+      return {
+        success: false,
+        application: null,
+        error: `Notes can be at most ${MAX_NOTES_LENGTH} characters.`,
+      }
+    }
+
     try {
       const application = await this.#repository.create({
         company: trimmedCompany,
         position: trimmedPosition,
         deadline: parsed.deadline,
+        status: startStatus,
+        jobLink: link.jobLink,
+        resumeVersion: trimmedResume || null,
+        notes: trimmedNotes || null,
       })
       return { success: true, application, error: null }
     } catch (error) {
@@ -129,9 +174,9 @@ export class ApplicationService {
     }
   }
 
-  // Business rule: company and position are required and trimmed; the deadline is optional.
-  // Same result shape as above.
-  async updateApplicationDetails(id, { company, position, deadline }) {
+  // Business rule: company and position are required and trimmed; deadline, job link, and
+  // resume version are optional (same rules as addApplication). Same result shape as above.
+  async updateApplicationDetails(id, { company, position, deadline, jobLink, resumeVersion }) {
     const trimmedCompany = company?.trim()
     const trimmedPosition = position?.trim()
 
@@ -146,12 +191,26 @@ export class ApplicationService {
     const parsed = parseDeadline(deadline)
     if (parsed.error) return { success: false, application: null, error: parsed.error }
 
+    const link = parseJobLink(jobLink)
+    if (link.error) return { success: false, application: null, error: link.error }
+
+    const trimmedResume = (resumeVersion ?? '').trim()
+    if (trimmedResume.length > MAX_RESUME_VERSION_LENGTH) {
+      return {
+        success: false,
+        application: null,
+        error: `Keep the resume version under ${MAX_RESUME_VERSION_LENGTH} characters.`,
+      }
+    }
+
     return this.#saveUpdate(
       () =>
         this.#repository.updateDetails(id, {
           company: trimmedCompany,
           position: trimmedPosition,
           deadline: parsed.deadline,
+          jobLink: link.jobLink,
+          resumeVersion: trimmedResume || null,
         }),
       'application details',
     )
