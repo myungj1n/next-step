@@ -28,7 +28,10 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
         company: application.company,
         position: application.position,
         deadline: application.deadline ?? null,
-        status: ApplicationStatus.APPLIED,
+        status: application.status ?? ApplicationStatus.APPLIED,
+        job_link: application.jobLink ?? null,
+        resume_version: application.resumeVersion ?? null,
+        notes: application.notes ?? null,
       })
       .select(COLUMNS)
       .single()
@@ -64,8 +67,14 @@ export class SupabaseApplicationRepository extends ApplicationRepository {
     return this.#update(id, { status })
   }
 
-  async updateDetails(id, { company, position, deadline }) {
-    return this.#update(id, { company, position, deadline })
+  async updateDetails(id, { company, position, deadline, jobLink, resumeVersion }) {
+    return this.#update(id, {
+      company,
+      position,
+      deadline,
+      job_link: jobLink ?? null,
+      resume_version: resumeVersion ?? null,
+    })
   }
 
   // Updates one row and resolves to the updated Application, or null when not found.

@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useMyApplications } from '../hooks/useMyApplications.js'
 import ApplicationDetails from '../pages/ApplicationDetails.jsx'
 import { applicationService } from '../services/index.js'
 import { DetailsOutcome } from '../services/applicationService.js'
+import { resumeVersionsFrom } from '../services/applicationQuery.js'
 
 // UI layer: asks ApplicationService for one application, picks the screen for the
 // outcome, and handles details → back navigation. No business or database logic here.
@@ -12,6 +14,9 @@ function DetailsRoute() {
   // The result remembers its id, so a result for a previous id counts as still loading.
   const [result, setResult] = useState(null)
   const location = useLocation()
+  // Only for the editor's resume dropdown; the page doesn't wait on it.
+  const { applications } = useMyApplications()
+  const resumeVersions = useMemo(() => resumeVersionsFrom(applications), [applications])
   const goBack = () => navigate(`/applications${location.state?.listSearch ?? ''}`)
 
   useEffect(() => {
@@ -73,6 +78,8 @@ function DetailsRoute() {
     <ApplicationDetails
       key={result.application.id}
       application={result.application}
+      resumeVersions={resumeVersions}
+      resumeVersionsLoading={applications === null}
       onBack={goBack}
       onSaveNotes={saveNotes}
       onUpdateStatus={updateStatus}

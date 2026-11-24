@@ -40,94 +40,193 @@
   color: var(--muted);
 }
 
-/* Edit company and position: a toggle under the header that opens a small form. */
-.details-edit-toggle {
+/* Header: name on the left, "Edit details" on the right. */
+.details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.details-heading {
+  min-width: 0;
+}
+
+.details-edit {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
   min-height: 40px;
-  margin-bottom: 20px;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
+  margin-top: 6px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
   border-radius: var(--radius-control);
   background: var(--surface);
-  color: var(--text);
   font: inherit;
+  font-weight: 600;
+  color: var(--ink);
   cursor: pointer;
 }
 
-.details-edit-form {
+.details-edit:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+/* Progress: the clickable stage track, saved on click. */
+.details-progress {
+  max-width: 680px;
+  margin: 0 0 36px;
+  padding: 0;
+  border: none;
+}
+
+.details-progress-title {
+  float: left;
+  width: 100%;
+  margin: 0 0 4px;
+  padding: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.details-progress-hint {
+  clear: both;
+  margin: 0 0 18px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.details-progress-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-height: 34px;
+  margin-top: 16px;
+}
+
+.details-saving {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.details-close-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Mark as rejected (red) / withdrawn (green): tinted so they read at a glance. */
+.details-close {
+  --close-color: var(--status-rejected);
+  --close-border: #fecaca;
+  --close-bg: #fef2f2;
+  --close-hover: #fee2e2;
+
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--close-border);
+  border-radius: var(--radius-control);
+  background: var(--close-bg);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--close-color);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.details-close.tone-withdrawn {
+  --close-color: var(--status-offer);
+  --close-border: #bbf7d0;
+  --close-bg: #f0fdf4;
+  --close-hover: #dcfce7;
+}
+
+.details-close:hover:not(:disabled) {
+  border-color: var(--close-color);
+  background: var(--close-hover);
+}
+
+.details-close:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.details-message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--status-rejected);
+}
+
+.details-message-success {
+  color: var(--status-offer);
+}
+
+.details-message-after {
+  margin: -24px 0 28px;
+}
+
+/* Details editor: takes the facts list's place while open. */
+.details-editor {
   display: grid;
-  gap: 16px;
-  max-width: 620px;
-  margin-bottom: 24px;
-  padding: 20px;
-  border: 1px solid var(--border);
+  gap: 20px;
+  margin: 0 0 40px;
+  padding: 24px 28px;
+  border: 1px solid var(--line);
   border-radius: var(--radius-panel);
   background: var(--surface);
 }
 
-.details-edit-field {
-  display: grid;
-  gap: 8px;
+.details-editor-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
-.details-edit-field label {
-  font-weight: 600;
-}
-
-.details-edit-field input {
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-control);
-  background: var(--surface);
-  font: inherit;
-  color: var(--text);
-}
-
-.details-edit-field input:focus-visible,
-.details-edit-toggle:focus-visible,
-.details-edit-actions button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.details-edit-actions {
+.details-editor-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
 }
 
-.details-edit-actions button {
-  min-height: 40px;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
+.details-cancel,
+.details-save {
+  min-height: 42px;
+  padding: 0 20px;
   border-radius: var(--radius-control);
-  background: var(--surface);
-  color: var(--text);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
 
-.details-edit-actions button[type='submit'] {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
+.details-cancel {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
 }
 
-.details-edit-actions button[type='submit']:hover:not(:disabled) {
-  background: var(--accent-hover);
+.details-cancel:hover:not(:disabled) {
+  background: var(--mist);
 }
 
-.details-edit-actions button:disabled {
-  opacity: 0.65;
+.details-save {
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.details-save:hover:not(:disabled) {
+  background: var(--brand-hover);
+}
+
+.details-cancel:disabled,
+.details-save:disabled {
+  opacity: 0.6;
   cursor: wait;
-}
-
-/* The large step track: the focal point of the page. */
-/* Same space above (after the Edit application button) as below. */
-.details-track {
-  max-width: 640px;
-  margin: 20px 0 40px;
 }
 
 /* Facts: a quiet two-column list on the page, no card. */
@@ -377,87 +476,31 @@
   color: var(--status-offer);
 }
 
-/* Status update form (sits under the step track). */
-.status-form {
-  display: grid;
-  gap: 8px;
-  max-width: 420px;
-  margin: 0 0 28px;
-}
-
-.status-form label {
-  font-weight: 600;
-}
-
-.status-form-controls {
-  display: flex;
-  gap: 8px;
-}
-
-.status-form select,
-.status-form button {
-  min-height: 40px;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-control);
-  font: inherit;
-}
-
-.status-form select {
-  flex: 1;
-  min-width: 0;
-  background: var(--surface);
-  color: var(--text);
-}
-
-.status-form button {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.status-form button:hover:not(:disabled) {
-  background: var(--accent-hover);
-}
-
-.status-form button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.status-form select:focus-visible,
-.status-form button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.status-message {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--status-rejected);
-}
-
-.status-message-success {
-  color: var(--status-offer);
-}
-
 @media (max-width: 560px) {
   .details-facts {
     grid-template-columns: 1fr;
   }
 
-  .details-edit-actions {
+  .details-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .details-edit {
+    margin-top: 0;
+  }
+
+  .details-editor {
+    padding: 20px 18px;
+  }
+
+  .details-editor-actions {
     flex-direction: column-reverse;
   }
 
-  .details-edit-actions button {
+  .details-cancel,
+  .details-save {
     width: 100%;
-  }
-
-  .status-form-controls {
-    flex-direction: column;
   }
 
   .notes-card {
@@ -465,7 +508,3 @@
   }
 }
 
-.details-edit-optional {
-  font-weight: 400;
-  color: var(--muted);
-}

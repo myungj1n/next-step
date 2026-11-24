@@ -264,11 +264,138 @@
   color: var(--muted);
 }
 
+/* Progress cell: the track and label open a status menu (a native select laid
+   invisibly over them, so keyboard, screen readers, and phones get the real thing). */
 .apps-progress {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: -6px -10px;
+  padding: 6px 10px;
+  border-radius: var(--radius-control);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.apps-progress:hover {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.apps-progress:focus-within {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line), var(--focus);
+}
+
+.apps-progress-select.apps-progress-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.apps-progress.is-saving {
+  cursor: wait;
+}
+
+.apps-progress.is-saving .apps-status {
+  color: var(--muted);
+}
+
+.apps-progress-chevron {
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.apps-progress:hover .apps-progress-chevron,
+.apps-progress:focus-within .apps-progress-chevron {
+  opacity: 1;
+}
+
+/* Touch screens have no hover: always show the chevron so it reads as tappable. */
+@media (hover: none) {
+  .apps-progress-chevron {
+    opacity: 1;
+  }
+}
+
+/* Confirmation after adding, and errors from changing a status. */
+.apps-added {
   display: flex;
   align-items: center;
-  gap: 14px;
-  white-space: nowrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px 12px 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-control);
+  background: #f0fdf4;
+  color: var(--ink);
+}
+
+.apps-added-icon {
+  flex: none;
+  color: var(--status-offer);
+}
+
+.apps-added-link {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--brand);
+  text-underline-offset: 3px;
+}
+
+.apps-added-close {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.apps-added-close:hover {
+  background: #dcfce7;
+  color: var(--ink);
+}
+
+.apps-row-error {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-control);
+  background: #fef2f2;
+  color: var(--status-rejected);
+}
+
+/* The row just added: a brief highlight that fades out. */
+.apps-row.is-new {
+  animation: apps-new-row 2.4s ease-out;
+}
+
+@keyframes apps-new-row {
+  0%,
+  40% {
+    background: var(--brand-soft);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apps-row.is-new {
+    animation: none;
+    background: var(--brand-soft);
+  }
 }
 
 .apps-status {
